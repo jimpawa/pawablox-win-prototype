@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>pawabloX — Win Confirmed Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --pawa-green: #84d820;
+    --pawa-green-dark: #6cb31a;
+    --pawa-dark: #101820;
+    --pawa-text: #0f1a14;
+    --pawa-text-soft: #56635a;
+    --pawa-line: #d8dcd9;
+    --pawa-card: #ffffff;
+    --pawa-bg: #f3f5f4;
+    --odds-bg: #e8f5d8;
+    --odds-text: #4c8214;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    background: #1c1f23;
+    color: var(--pawa-text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Phone frame */
+  .phone {
+    position: relative;
+    width: 376px;
+    height: 836px;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 28px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+  }
+
+  /* Homepage = exported Figma PNG */
+  .homepage {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/homepage.png');
+    background-size: 376px 836px;
+    background-repeat: no-repeat;
+    background-position: top left;
+  }
+
+  /* ─── Backdrop & modal ─── */
+  .backdrop {
+    position: absolute; inset: 0;
+    background: rgba(15, 26, 20, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 360ms ease;
+    z-index: 10;
+  }
+  .backdrop.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    position: absolute;
+    left: 16px;
+    width: 344px;
+    top: 80px;
+    background: var(--pawa-card);
+    border-radius: 28px;
+    padding: 24px 24px 16px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.18);
+    transform: translateY(140%);
+    opacity: 0;
+    transition:
+      transform 620ms cubic-bezier(.22,1.13,.45,1),
+      opacity 360ms ease;
+    z-index: 11;
+    display: flex; flex-direction: column;
+  }
+  .modal.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .modal .close {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #e6efe8;
+    color: var(--pawa-text);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .modal .close:hover { background: #d5e3d8; }
+
+  .modal h1 {
+    margin: 6px 0 0;
+    font-size: 24px; font-weight: 700;
+    text-align: center;
+    color: var(--pawa-text);
+    line-height: 1.2;
+  }
+
+  .modal .badge-wrap {
+    margin: 6px auto 0;
+    width: 170px; height: 200px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal .badge {
+    max-width: 100%; max-height: 100%;
+    display: block;
+  }
+
+  .modal .body {
+    margin: 6px 0 0;
+    font-size: 14px;
+    text-align: center;
+    color: var(--pawa-text-soft);
+  }
+
+  .modal .amount {
+    margin-top: 4px;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--pawa-text);
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+  }
+  .modal .ugx {
+    margin-top: 0;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pawa-green-dark);
+    letter-spacing: 1px;
+  }
+
+  .modal .odds-pill {
+    margin: 14px auto 0;
+    background: var(--odds-bg);
+    color: var(--odds-text);
+    padding: 6px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .modal .odds-pill .with { color: var(--pawa-text-soft); font-weight: 400; }
+  .modal .odds-pill .num { font-weight: 700; color: var(--odds-text); }
+  .modal .odds-pill .label { color: var(--pawa-text-soft); font-weight: 400; }
+
+  .modal .actions {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 18px;
+  }
+  .modal .btn {
+    height: 40px;
+    border-radius: 6px;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 120ms ease, background 120ms ease;
+  }
+  .modal .btn.primary {
+    background: var(--pawa-green);
+    color: var(--pawa-text);
+  }
+  .modal .btn.primary:hover { background: var(--pawa-green-dark); color: #fff; }
+  .modal .btn.outline {
+    background: transparent;
+    border: 1.5px solid var(--pawa-line);
+    color: var(--pawa-text);
+  }
+  .modal .btn.outline:hover { background: #f5f7f5; }
+
+  .modal hr {
+    border: none;
+    border-top: 1px solid var(--pawa-line);
+    margin: 14px 0 10px;
+  }
+  .modal .checkbox {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px;
+    color: var(--pawa-text-soft);
+    cursor: pointer;
+    user-select: none;
+  }
+  .modal .checkbox input {
+    accent-color: var(--pawa-green-dark);
+    width: 16px; height: 16px;
+  }
+
+  /* Confetti canvas overlay */
+  .confetti-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 12;
+  }
+
+  /* Tier switcher */
+  .tier-switcher {
+    position: fixed;
+    top: 20px; left: 20px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 50;
+  }
+  .tier-switcher button {
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    cursor: pointer;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-family: inherit;
+  }
+  .tier-switcher button.active {
+    background: var(--pawa-green);
+    color: var(--pawa-text);
+  }
+  .tier-switcher button:not(.active):hover { background: #f3f5f4; }
+
+  .hint {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    color: #95a3a7;
+    font-size: 12px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="tier-switcher" id="tierSwitch">
+  <button data-tier="bronze">Bronze</button>
+  <button data-tier="silver">Silver</button>
+  <button data-tier="gold">Gold</button>
+  <button data-tier="platinum">Platinum</button>
+  <button data-tier="diamond">Diamond</button>
+</div>
+
+<div class="phone" id="phone">
+  <div class="homepage"></div>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <button class="close" id="closeBtn" aria-label="Close">✕</button>
+    <h1 id="title">You called it.</h1>
+    <div class="badge-wrap">
+      <img class="badge" id="badge" src="assets/bronze.png" alt="" />
+    </div>
+    <p class="body" id="body">Right on the money:</p>
+    <div class="amount" id="amount">2,647.60</div>
+    <div class="ugx">UGX</div>
+    <div style="text-align:center;">
+      <div class="odds-pill">
+        <span class="with">with</span>
+        <span class="num" id="odds">5.67×</span>
+        <span class="label">odds</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary">SHARE YOUR WIN</button>
+      <button class="btn outline">VIEW BETSLIP</button>
+    </div>
+    <hr />
+    <label class="checkbox">
+      <input type="checkbox" />
+      Turn off win notifications for 30 days
+    </label>
+  </div>
+
+  <canvas class="confetti-canvas" id="confetti"></canvas>
+</div>
+
+<div class="hint">Press R to replay · Use tier buttons to switch</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+const tiers = {
+  bronze: {
+    badge:  'assets/bronze.png',
+    title:  'You called it.',
+    body:   'Right on the money:',
+    amount: '2,647.60',
+    odds:   '5.67×',
+    // Bronze: warm brown / orange / peach (matches trophy + stars)
+    colors: ['#6B3F1F', '#B8703D', '#D89060', '#F4A57E', '#FFD49A']
+  },
+  silver: {
+    badge:  'assets/silver.png',
+    title:  "You're untouchable.",
+    body:   'Untouchable reward:',
+    amount: '112,132.30',
+    odds:   '123.03×',
+    // Silver: cool grays (medal tones)
+    colors: ['#8A95A2', '#A8B2BD', '#C8D0D8', '#E5E9ED', '#ffffff']
+  },
+  gold: {
+    badge:  'assets/gold.png',
+    title:  'On top of your game.',
+    body:   'Crowning your run:',
+    amount: '52,347.60',
+    odds:   '56.90×',
+    // Gold: rich yellow + amber (matches crown)
+    colors: ['#B8841A', '#E5A823', '#F4C842', '#FFD966', '#FFF0A0']
+  },
+  platinum: {
+    badge:  'assets/platinum.png',
+    title:  'That was pure class.',
+    body:   'Classy payout:',
+    amount: '24,427.20',
+    odds:   '26.89×',
+    // Platinum: cool gray with holographic pink/cyan accents
+    colors: ['#7B8A99', '#A0AEC0', '#CBD5E0', '#FFB6D9', '#A8E5F5']
+  },
+  diamond: {
+    badge:  'assets/diamond.png',
+    title:  'Legendary play.',
+    body:   'Legendary haul:',
+    amount: '100,005,000.60',
+    odds:   '1023.87×',
+    // Diamond: deep blue → cyan (matches diamond facets)
+    colors: ['#1E3A8A', '#2563EB', '#4A90E2', '#7BB3F0', '#A8DCFF']
+  }
+};
+
+const titleEl   = document.getElementById('title');
+const bodyEl    = document.getElementById('body');
+const amountEl  = document.getElementById('amount');
+const oddsEl    = document.getElementById('odds');
+const badgeEl   = document.getElementById('badge');
+const modalEl   = document.getElementById('modal');
+const backdrop  = document.getElementById('backdrop');
+const closeBtn  = document.getElementById('closeBtn');
+const tierSwitch = document.getElementById('tierSwitch');
+const canvas    = document.getElementById('confetti');
+
+// Global confetti — uses a full-viewport canvas so particles fly across the whole page,
+// while origin is computed dynamically from the badge's real screen position.
+const confettiCtor = (opts) => confetti(opts);
+
+let currentTier = (new URLSearchParams(location.search).get('tier')) || 'bronze';
+if (!tiers[currentTier]) currentTier = 'bronze';
+
+function setActiveTierButton(tier) {
+  for (const btn of tierSwitch.querySelectorAll('button')) {
+    btn.classList.toggle('active', btn.dataset.tier === tier);
+  }
+}
+
+function fitAmount(el) {
+  el.style.fontSize = '40px';
+  let size = 40;
+  const parentW = el.parentElement.clientWidth - 4;
+  while (size > 18 && el.scrollWidth > parentW) {
+    size -= 1;
+    el.style.fontSize = size + 'px';
+  }
+}
+
+function loadTier(tier) {
+  currentTier = tier;
+  setActiveTierButton(tier);
+  const t = tiers[tier];
+  titleEl.textContent  = t.title;
+  bodyEl.textContent   = t.body;
+  amountEl.textContent = t.amount;
+  oddsEl.textContent   = t.odds;
+  badgeEl.src          = t.badge;
+  badgeEl.onload = () => fitAmount(amountEl);
+  fitAmount(amountEl);
+}
+
+function showWin() {
+  backdrop.classList.add('show');
+  setTimeout(() => modalEl.classList.add('show'), 120);
+  setTimeout(() => burstConfetti(), 380);
+}
+
+function hideWin() {
+  backdrop.classList.remove('show');
+  modalEl.classList.remove('show');
+}
+
+function burstConfetti() {
+  // Burst from the badge's actual viewport position, in the tier's palette
+  const rect = badgeEl.getBoundingClientRect();
+  const x = (rect.left + rect.width / 2) / window.innerWidth;
+  const y = (rect.top + rect.height / 2) / window.innerHeight;
+  const t = tiers[currentTier];
+  confettiCtor({
+    particleCount: 220,
+    spread: 360,
+    origin: { x, y },
+    colors: t.colors,
+    scalar: 1.8,
+    startVelocity: 60,
+    gravity: 0.8,
+    ticks: 320
+  });
+}
+
+closeBtn.addEventListener('click', hideWin);
+backdrop.addEventListener('click', hideWin);
+for (const btn of tierSwitch.querySelectorAll('button')) {
+  btn.addEventListener('click', () => {
+    hideWin();
+    loadTier(btn.dataset.tier);
+    setTimeout(showWin, 250);
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'r') {
+    hideWin();
+    setTimeout(showWin, 250);
+  }
+  if (e.key === 'Escape') hideWin();
+});
+
+loadTier(currentTier);
+window.addEventListener('load', () => {
+  setTimeout(showWin, 650);
+});
+</script>
+</body>
+</html>
