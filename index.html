@@ -7,9 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-  /* ── Exact betPawa design tokens (from production CSS) ── */
+  /* Exact betPawa design tokens from production */
   :root {
     --bg-brand: #9ce800;
     --bg-brand-accent: #8dc63f;
@@ -17,24 +16,12 @@
     --bg-secondary: #ffffff;
     --bg-tertiary: #e4e6e7;
     --bg-inverse-default: #252a2d;
-    --bg-inverse-secondary: #2f3437;
-    --bg-inverse-tertiary: #353b40;
     --bg-success: #ecfccb;
-    --bg-warning: #ffe3bf;
-    --bg-warning-strong: #f5d432;
-    --bg-info: #d3f2f8;
     --border-default: #e4e6e7;
-    --border-accent: #3d5904;
     --text-primary: #252a2d;
     --text-secondary: #7a8185;
-    --text-disabled: #aaaeb0;
     --text-success: #5b8506;
     --text-on-brand: #252a2d;
-    --text-primary-inverse: #ffffff;
-    --text-secondary-inverse: #aaaeb0;
-    --text-brand-dark: #8dc63f;
-    --container-max: 960px;
-    --gutter: 12px;
   }
 
   * { box-sizing: border-box; }
@@ -47,410 +34,20 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .container {
-    max-width: var(--container-max);
-    margin: 0 auto;
-    padding: 0 var(--gutter);
+  /* ─── Homepage (real Figma export, switched by breakpoint via <picture>) ─── */
+  .homepage-wrap {
+    display: flex; justify-content: center;
+    background: var(--bg-default);
   }
-
-  /* ── Header ── */
-  .app-header {
-    background: var(--bg-inverse-default);
-    color: var(--text-primary-inverse);
-    position: sticky; top: 0; z-index: 30;
-  }
-  .app-header .container {
-    height: 48px;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .logo {
-    font-weight: 700; font-size: 20px;
-    letter-spacing: -0.4px;
-    line-height: 1;
-    margin-right: 8px;
-  }
-  .logo span { color: var(--bg-brand); }
-  .header-actions {
-    margin-left: auto;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .icon-btn {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: transparent;
-    border: none; cursor: pointer;
-    color: #fff;
-    font-size: 14px;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .icon-btn:hover { background: rgba(255,255,255,0.08); }
-  .login {
-    background: transparent;
-    border: none; cursor: pointer;
-    color: #fff;
-    font-size: 13px; font-weight: 700;
-    padding: 8px 12px;
-    font-family: inherit;
-    letter-spacing: 0.3px;
-  }
-  .join {
-    background: var(--bg-brand);
-    color: var(--text-on-brand);
-    border: none; cursor: pointer;
-    font-family: inherit;
-    font-weight: 700; font-size: 12px;
-    padding: 8px 14px;
-    border-radius: 4px;
-    letter-spacing: 0.3px;
-  }
-  .join:hover { background: var(--bg-brand-accent); }
-
-  /* ── Nav tabs ── */
-  .app-nav {
-    background: var(--bg-inverse-default);
-    color: var(--text-primary-inverse);
-    border-bottom: 1px solid var(--bg-inverse-tertiary);
-    position: sticky; top: 48px; z-index: 29;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .app-nav::-webkit-scrollbar { display: none; }
-  .nav-tabs {
-    max-width: var(--container-max);
-    margin: 0 auto;
-    display: flex;
-    height: 40px;
-    padding: 0 4px;
-    align-items: stretch;
-  }
-  .tab {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 0 12px;
-    color: var(--text-secondary-inverse);
-    font-size: 12px; font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .tab:hover { color: #fff; }
-  .tab.active {
-    color: #fff;
-    border-bottom-color: var(--bg-brand);
-  }
-  .tab i { font-size: 14px; line-height: 1; }
-  .nav-chev {
-    margin-left: auto;
-    color: var(--text-secondary-inverse);
-    padding: 0 12px;
-    display: flex; align-items: center;
-    font-size: 12px;
-  }
-
-  /* ── Why betPawa? ── */
-  .why-pawa {
-    background: var(--bg-success);
-    border: 1px solid #d4e5b8;
-    border-radius: 4px;
-    margin: 12px 0;
-    overflow: hidden;
-  }
-  .why-pawa > header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 14px 6px;
-  }
-  .why-pawa > header h2 {
-    margin: 0;
-    font-size: 14px; font-weight: 700;
-    color: var(--text-primary);
-  }
-  .why-pawa > header .chev-btn {
-    background: transparent; border: none; cursor: pointer;
-    color: var(--text-primary);
-    font-size: 12px;
-    width: 24px; height: 24px;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .why-list {
-    padding: 0 8px 8px;
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .why-item {
-    background: #fff;
-    border-radius: 4px;
-    padding: 12px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .why-item .ico {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--bg-brand);
-    color: var(--text-on-brand);
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  .why-item .txt h3 {
-    margin: 0;
-    font-size: 14px; font-weight: 700;
-    color: var(--text-primary);
-  }
-  .why-item .txt p {
-    margin: 2px 0 0;
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-
-  /* ── League shortcuts ── */
-  .leagues {
-    display: flex; gap: 6px;
-    overflow-x: auto;
-    padding: 8px var(--gutter);
-    margin: 0 calc(-1 * var(--gutter));
-    scrollbar-width: none;
-  }
-  .leagues::-webkit-scrollbar { display: none; }
-  .chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #fff;
-    border: 1px solid var(--border-default);
-    border-radius: 18px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    cursor: pointer;
-    font-family: inherit;
-    color: var(--text-primary);
-    flex-shrink: 0;
-  }
-  .chip i {
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-  .chip .num {
-    background: #ebedee;
-    color: var(--text-secondary);
-    border-radius: 10px;
-    padding: 1px 7px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  /* ── Section ── */
-  .section { margin: 14px 0; }
-  .section-h {
-    display: flex; align-items: center; gap: 8px;
-    margin: 10px 4px;
-    font-size: 16px; font-weight: 700;
-    color: var(--text-primary);
-  }
-  .section-h .ico-h { font-size: 18px; }
-  .section-h .info {
-    color: var(--text-secondary);
-    font-size: 14px;
-  }
-  .section-h .pill-right {
-    margin-left: auto;
-    background: var(--bg-brand);
-    color: var(--text-on-brand);
-    font-size: 12px; font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 12px;
-    display: inline-flex; align-items: center; gap: 6px;
-    text-decoration: none;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  @media (min-width: 720px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  }
-
-  .card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-default);
-    border-radius: 4px;
-    padding: 12px;
-    position: relative;
-  }
-
-  /* Combo card */
-  .combo .combo-top {
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
-    gap: 8px;
-  }
-  .combo-top .time { font-weight: 500; }
-  .tag {
-    background: #f0f2f0;
-    color: var(--text-primary);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .teams {
-    font-size: 15px; font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 6px;
-    color: var(--text-primary);
-  }
-  .teams > div + div { color: var(--text-primary); }
-  .category {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-  }
-  .bet-list {
-    list-style: none;
-    margin: 0 0 10px; padding: 0;
-    font-size: 13px;
-    display: flex; flex-direction: column; gap: 4px;
-    color: var(--text-primary);
-  }
-  .bet-list li { display: flex; align-items: baseline; gap: 6px; }
-  .bet-list .dot { color: var(--text-primary); }
-  .bet-list .name { font-weight: 700; }
-  .bet-list .detail { color: var(--text-secondary); font-size: 12px; }
-  .combo-odds {
-    background: #f4f5f6;
-    border-top: 1px solid var(--border-default);
-    margin: 0 -12px -12px;
-    padding: 10px 0;
-    text-align: center;
-    font-size: 15px; font-weight: 700;
-    color: var(--text-primary);
-    border-radius: 0 0 4px 4px;
-  }
-
-  /* Match card */
-  .match .live-tag {
-    display: inline-flex; align-items: center; gap: 4px;
-    color: #cc371b;
-    font-size: 11px; font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 6px;
-  }
-  .match .live-tag::before {
-    content: ''; width: 7px; height: 7px;
-    background: #cc371b; border-radius: 50%;
-    animation: pulse 1.4s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.35; }
-  }
-  .bet-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 32px;
-    gap: 6px;
-  }
-  .bet-btn {
-    background: #f4f5f6;
-    border: none;
-    padding: 8px 0;
-    border-radius: 4px;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    color: var(--text-primary);
-    transition: background 80ms ease;
-  }
-  .bet-btn:hover { background: #ebedee; }
-  .bet-btn .lbl {
-    font-size: 11px; color: var(--text-secondary); font-weight: 500;
-    text-transform: uppercase;
-  }
-  .bet-btn .odds { font-size: 14px; font-weight: 700; }
-  .bet-btn.more {
-    color: var(--text-secondary);
-    font-size: 16px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  .view-more {
+  .homepage {
     display: block;
     width: 100%;
-    background: #fff;
-    border: 1px solid var(--border-default);
-    border-radius: 4px;
-    padding: 10px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-primary);
-    cursor: pointer;
-    margin-top: 8px;
+    max-width: 960px;
+    height: auto;
   }
-  .view-more:hover { background: #fafbfb; }
-  .view-more i { margin-right: 6px; color: var(--text-secondary); }
+  /* At small widths images already use full viewport. At ≥600 we cap the wrap to match design */
 
-  /* ── Yellow promo bar ── */
-  .promo-bar {
-    background: var(--bg-warning-strong);
-    color: var(--text-primary);
-    font-size: 12px; font-weight: 500;
-    text-align: center;
-    padding: 7px 12px;
-    position: sticky;
-    bottom: 56px;
-    z-index: 25;
-    line-height: 1.4;
-  }
-  .promo-bar strong { font-weight: 700; }
-
-  /* ── Bottom nav ── */
-  .bottom-nav {
-    background: #fff;
-    border-top: 1px solid var(--border-default);
-    position: sticky;
-    bottom: 0;
-    z-index: 26;
-  }
-  .bottom-nav .container {
-    display: flex;
-    height: 56px;
-    padding: 0;
-  }
-  .nav-item {
-    flex: 1;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: var(--text-secondary);
-    font-size: 10px;
-    gap: 2px;
-    cursor: pointer;
-    text-decoration: none;
-    position: relative;
-  }
-  .nav-item i { font-size: 18px; }
-  .nav-item.active { color: var(--text-success); font-weight: 700; }
-  .nav-item .num-badge {
-    position: absolute;
-    top: 6px;
-    left: 50%; margin-left: 4px;
-    background: var(--bg-brand);
-    color: var(--text-on-brand);
-    border-radius: 10px;
-    font-size: 10px; font-weight: 700;
-    padding: 1px 5px;
-    line-height: 1.2;
-  }
-
-  @media (min-width: 960px) {
-    :root { --gutter: 20px; }
-  }
-
-  /* ── Backdrop & modal ── */
+  /* ─── Backdrop & modal ─── */
   .backdrop {
     position: fixed; inset: 0;
     background: rgba(15, 26, 20, 0.55);
@@ -463,8 +60,7 @@
 
   .modal {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     width: calc(100% - 32px);
     max-width: 400px;
     max-height: calc(100vh - 32px);
@@ -495,9 +91,10 @@
     background: var(--bg-tertiary);
     color: var(--text-primary);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     display: flex; align-items: center; justify-content: center;
     z-index: 2;
+    line-height: 1;
   }
   .modal .close:hover { background: #d8dadb; }
 
@@ -587,10 +184,10 @@
   }
   .modal .checkbox input { accent-color: var(--text-success); width: 16px; height: 16px; }
 
-  /* ── Tier switcher (utility overlay, not part of betPawa UI) ── */
+  /* ─── Tier switcher (utility overlay) ─── */
   .tier-switcher {
     position: fixed;
-    top: 60px; right: 12px;
+    top: 12px; right: 12px;
     background: #fff;
     border-radius: 10px;
     padding: 4px;
@@ -601,7 +198,7 @@
     z-index: 200;
   }
   @media (min-width: 720px) {
-    .tier-switcher { top: 60px; right: 16px; flex-direction: row; }
+    .tier-switcher { top: 16px; right: 16px; flex-direction: row; }
   }
   .tier-switcher button {
     background: transparent; border: none;
@@ -618,13 +215,13 @@
   .tier-switcher button:not(.active):hover { background: #f3f5f4; }
 
   .hint {
-    position: fixed; bottom: 70px; left: 12px;
-    color: rgba(255,255,255,0.7);
-    background: rgba(0,0,0,0.3);
+    position: fixed; bottom: 16px; left: 16px;
+    color: rgba(255,255,255,0.85);
+    background: rgba(0,0,0,0.4);
     backdrop-filter: blur(6px);
     border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 10px;
+    padding: 6px 10px;
+    font-size: 11px;
     user-select: none;
     z-index: 50;
   }
@@ -640,228 +237,18 @@
   <button data-tier="diamond">Diamond</button>
 </div>
 
-<header class="app-header">
-  <div class="container">
-    <div class="logo">bet<span>Pawa</span></div>
-    <div class="header-actions">
-      <button class="icon-btn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
-      <button class="login">LOGIN</button>
-      <button class="join">JOIN NOW</button>
-    </div>
-  </div>
-</header>
-
-<nav class="app-nav">
-  <div class="nav-tabs">
-    <a class="tab active" aria-label="Home"><i class="fa-solid fa-house"></i></a>
-    <a class="tab"><i class="fa-solid fa-futbol"></i>SPORTS</a>
-    <a class="tab"><i class="fa-solid fa-bolt"></i>LIVE</a>
-    <a class="tab"><i class="fa-solid fa-dice"></i>CASINO</a>
-    <a class="tab"><i class="fa-solid fa-plane-up"></i>AVIATOR</a>
-    <a class="tab"><i class="fa-solid fa-gamepad"></i>VIRTUALS</a>
-    <a class="tab"><i class="fa-solid fa-6"></i>PAWA 6</a>
-    <a class="tab"><i class="fa-solid fa-trophy"></i>JACKPOT</a>
-    <span class="nav-chev"><i class="fa-solid fa-chevron-down"></i></span>
-  </div>
-</nav>
-
-<main class="container">
-  <section class="why-pawa">
-    <header>
-      <h2>Why betPawa?</h2>
-      <button class="chev-btn" aria-label="Collapse"><i class="fa-solid fa-chevron-up"></i></button>
-    </header>
-    <div class="why-list">
-      <div class="why-item">
-        <div class="ico"><i class="fa-solid fa-percent"></i></div>
-        <div class="txt">
-          <h3>1250% Win Bonus</h3>
-          <p>Win up to 1250% with no minumul stake!</p>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="ico"><i class="fa-solid fa-star"></i></div>
-        <div class="txt">
-          <h3>2up Early Settlement</h3>
-          <p>Some great odds on 1x2 &amp; DC including live</p>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="ico"><i class="fa-solid fa-plane-up"></i></div>
-        <div class="txt">
-          <h3>Biggest Aviator Wins</h3>
-          <p>Play from ₦1 for Nigeria's biggest max win.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="leagues">
-    <button class="chip"><i class="fa-solid fa-circle-play" style="color:#cc371b"></i>Live now <span class="num">8</span></button>
-    <button class="chip"><i class="fa-solid fa-futbol"></i>Premier League <span class="num">8</span></button>
-    <button class="chip"><i class="fa-solid fa-futbol"></i>Serie A <span class="num">6</span></button>
-    <button class="chip"><i class="fa-solid fa-futbol"></i>LaLiga <span class="num">9</span></button>
-    <button class="chip"><i class="fa-solid fa-futbol"></i>Bundesliga <span class="num">7</span></button>
-    <button class="chip"><i class="fa-solid fa-trophy"></i>UEFA <span class="num">12</span></button>
-  </div>
-
-  <section class="section">
-    <h2 class="section-h">Popular Combos <span class="info"><i class="fa-solid fa-circle-info"></i></span></h2>
-    <div class="grid">
-      <article class="card combo">
-        <div class="combo-top">
-          <span class="time">3:00PM Wed 16/12</span>
-          <span class="tag">No In-Play Cashout</span>
-        </div>
-        <div class="teams"><div>Chelsea FC</div><div>Paris Saint-Germain (n)</div></div>
-        <div class="category">Football / International / FIFA Club World Cup</div>
-        <ul class="bet-list">
-          <li><span class="dot">•</span><span class="name">Under 3.5</span><span class="detail">Over/Under | Full Time</span></li>
-          <li><span class="dot">•</span><span class="name">Over 10.5</span><span class="detail">Total Corners | Full…</span></li>
-        </ul>
-        <div class="combo-odds">4.35</div>
-      </article>
-      <article class="card combo">
-        <div class="combo-top">
-          <span class="time">8:00PM Wed 16/12</span>
-          <span class="tag">Cashout</span>
-        </div>
-        <div class="teams"><div>Real Madrid</div><div>Atlético Madrid</div></div>
-        <div class="category">Football / Spain / LaLiga</div>
-        <ul class="bet-list">
-          <li><span class="dot">•</span><span class="name">Over 2.5</span><span class="detail">Total Goals | Full Time</span></li>
-          <li><span class="dot">•</span><span class="name">BTTS Yes</span><span class="detail">Both Teams to Score</span></li>
-        </ul>
-        <div class="combo-odds">3.12</div>
-      </article>
-      <article class="card combo">
-        <div class="combo-top">
-          <span class="time">5:45PM Thu 17/12</span>
-          <span class="tag">Cashout</span>
-        </div>
-        <div class="teams"><div>Arsenal</div><div>Manchester United</div></div>
-        <div class="category">Football / England / Premier League</div>
-        <ul class="bet-list">
-          <li><span class="dot">•</span><span class="name">Arsenal Win</span><span class="detail">Full Time Result</span></li>
-          <li><span class="dot">•</span><span class="name">Over 2.5</span><span class="detail">Total Goals</span></li>
-        </ul>
-        <div class="combo-odds">2.78</div>
-      </article>
-      <article class="card combo">
-        <div class="combo-top">
-          <span class="time">9:00PM Thu 17/12</span>
-          <span class="tag">No In-Play Cashout</span>
-        </div>
-        <div class="teams"><div>Bayern Munich</div><div>Borussia Dortmund</div></div>
-        <div class="category">Football / Germany / Bundesliga</div>
-        <ul class="bet-list">
-          <li><span class="dot">•</span><span class="name">Bayern -1.5</span><span class="detail">Asian Handicap</span></li>
-          <li><span class="dot">•</span><span class="name">Over 3.5</span><span class="detail">Total Goals</span></li>
-        </ul>
-        <div class="combo-odds">5.42</div>
-      </article>
-    </div>
-    <button class="view-more"><i class="fa-solid fa-futbol"></i>View more combos</button>
-  </section>
-
-  <section class="section">
-    <h2 class="section-h"><i class="fa-solid fa-futbol ico-h"></i>Football <a class="pill-right">291 <i class="fa-solid fa-chevron-right"></i></a></h2>
-    <div class="grid">
-      <article class="card match">
-        <div class="live-tag">Live</div>
-        <div class="teams"><div>St George Willawong FC</div><div>Olympic FC Brisbane</div></div>
-        <div class="category">Football / Australia / Queensland NPL</div>
-        <div class="bet-buttons">
-          <button class="bet-btn"><span class="lbl">1</span><span class="odds">2.10</span></button>
-          <button class="bet-btn"><span class="lbl">X</span><span class="odds">3.40</span></button>
-          <button class="bet-btn"><span class="lbl">2</span><span class="odds">2.95</span></button>
-          <button class="bet-btn more"><i class="fa-solid fa-ellipsis"></i></button>
-        </div>
-      </article>
-      <article class="card match">
-        <div class="combo-top"><span class="time">7:30PM Wed 16/12</span></div>
-        <div class="teams"><div>Tottenham Hotspur</div><div>West Ham United</div></div>
-        <div class="category">Football / England / Premier League</div>
-        <div class="bet-buttons">
-          <button class="bet-btn"><span class="lbl">1</span><span class="odds">1.85</span></button>
-          <button class="bet-btn"><span class="lbl">X</span><span class="odds">3.60</span></button>
-          <button class="bet-btn"><span class="lbl">2</span><span class="odds">4.20</span></button>
-          <button class="bet-btn more"><i class="fa-solid fa-ellipsis"></i></button>
-        </div>
-      </article>
-      <article class="card match">
-        <div class="combo-top"><span class="time">9:00PM Wed 16/12</span></div>
-        <div class="teams"><div>Inter Milan</div><div>AC Milan</div></div>
-        <div class="category">Football / Italy / Serie A</div>
-        <div class="bet-buttons">
-          <button class="bet-btn"><span class="lbl">1</span><span class="odds">2.40</span></button>
-          <button class="bet-btn"><span class="lbl">X</span><span class="odds">3.10</span></button>
-          <button class="bet-btn"><span class="lbl">2</span><span class="odds">2.75</span></button>
-          <button class="bet-btn more"><i class="fa-solid fa-ellipsis"></i></button>
-        </div>
-      </article>
-      <article class="card match">
-        <div class="combo-top"><span class="time">10:00PM Wed 16/12</span></div>
-        <div class="teams"><div>Barcelona</div><div>Sevilla</div></div>
-        <div class="category">Football / Spain / LaLiga</div>
-        <div class="bet-buttons">
-          <button class="bet-btn"><span class="lbl">1</span><span class="odds">1.55</span></button>
-          <button class="bet-btn"><span class="lbl">X</span><span class="odds">4.20</span></button>
-          <button class="bet-btn"><span class="lbl">2</span><span class="odds">5.80</span></button>
-          <button class="bet-btn more"><i class="fa-solid fa-ellipsis"></i></button>
-        </div>
-      </article>
-    </div>
-    <button class="view-more"><i class="fa-solid fa-futbol"></i>View more Football (291)</button>
-  </section>
-
-  <section class="section">
-    <h2 class="section-h"><i class="fa-solid fa-basketball ico-h"></i>Basketball <a class="pill-right">121 <i class="fa-solid fa-chevron-right"></i></a></h2>
-    <div class="grid">
-      <article class="card match">
-        <div class="combo-top"><span class="time">1:00AM Thu 17/12</span></div>
-        <div class="teams"><div>LA Lakers</div><div>Golden State Warriors</div></div>
-        <div class="category">Basketball / USA / NBA</div>
-        <div class="bet-buttons">
-          <button class="bet-btn"><span class="lbl">1</span><span class="odds">1.95</span></button>
-          <button class="bet-btn"><span class="lbl">X</span><span class="odds">12.00</span></button>
-          <button class="bet-btn"><span class="lbl">2</span><span class="odds">1.90</span></button>
-          <button class="bet-btn more"><i class="fa-solid fa-ellipsis"></i></button>
-        </div>
-      </article>
-      <article class="card match">
-        <div class="combo-top"><span class="time">2:30AM Thu 17/12</span></div>
-        <div class="teams"><div>Boston Celtics</div><div>Miami Heat</div></div>
-        <div class="category">Basketball / USA / NBA</div>
-        <div class="bet-buttons">
-          <button class="bet-btn"><span class="lbl">1</span><span class="odds">1.65</span></button>
-          <button class="bet-btn"><span class="lbl">X</span><span class="odds">15.00</span></button>
-          <button class="bet-btn"><span class="lbl">2</span><span class="odds">2.30</span></button>
-          <button class="bet-btn more"><i class="fa-solid fa-ellipsis"></i></button>
-        </div>
-      </article>
-    </div>
-    <button class="view-more"><i class="fa-solid fa-basketball"></i>View more Basketball (121)</button>
-  </section>
-</main>
-
-<div class="promo-bar">
-  Add 3 legs to your betslip to earn up to a <strong>1000% Win Bonus.</strong>
+<!-- Real Figma export of the homepage, swapped by viewport width -->
+<div class="homepage-wrap">
+  <picture>
+    <source media="(max-width: 359px)" srcset="assets/home-320.png" />
+    <source media="(max-width: 519px)" srcset="assets/home-376.png" />
+    <img class="homepage" src="assets/home-600.png" alt="betPawa homepage" />
+  </picture>
 </div>
-
-<nav class="bottom-nav">
-  <div class="container">
-    <a class="nav-item active"><i class="fa-solid fa-bars"></i>Menu</a>
-    <a class="nav-item"><i class="fa-solid fa-futbol"></i>Sports</a>
-    <a class="nav-item"><i class="fa-solid fa-receipt"></i>Betslip<span class="num-badge">8</span></a>
-    <a class="nav-item"><i class="fa-solid fa-clipboard-list"></i>My bets</a>
-    <a class="nav-item"><i class="fa-solid fa-user"></i>Account</a>
-  </div>
-</nav>
 
 <div class="backdrop" id="backdrop"></div>
 <div class="modal" id="modal">
-  <button class="close" id="closeBtn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+  <button class="close" id="closeBtn" aria-label="Close">×</button>
   <h1 id="title">You called it.</h1>
   <div class="badge-wrap">
     <img class="badge" id="badge" src="assets/bronze.png" alt="" />
