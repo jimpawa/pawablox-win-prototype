@@ -58,16 +58,17 @@
   }
   .backdrop.show { opacity: 1; pointer-events: auto; }
 
+  /* ── Modal — exact Figma Group 11 layout (344×640) ── */
   .modal {
     position: fixed;
     top: 50%; left: 50%;
-    width: calc(100% - 32px);
-    max-width: 400px;
-    max-height: calc(100vh - 32px);
-    overflow-y: auto;
+    width: 344px;
+    max-width: calc(100vw - 24px);
+    height: 640px;
+    max-height: calc(100vh - 24px);
     background: var(--bg-secondary);
     border-radius: 28px;
-    padding: 24px 24px 16px;
+    padding: 0;
     box-shadow: 0 30px 60px rgba(0,0,0,0.22);
     transform: translate(-50%, calc(-50% + 100vh));
     opacity: 0;
@@ -75,13 +76,14 @@
       transform 620ms cubic-bezier(.22, 1.13, .45, 1),
       opacity 360ms ease;
     z-index: 101;
-    display: flex; flex-direction: column;
+    overflow: hidden;
   }
   .modal.show {
     transform: translate(-50%, -50%);
     opacity: 1;
   }
 
+  /* Close — Tonal Sm Circle (32×32), 12 inset from top-right of card */
   .modal .close {
     position: absolute;
     top: 12px; right: 12px;
@@ -95,67 +97,145 @@
     display: flex; align-items: center; justify-content: center;
     z-index: 2;
     line-height: 1;
+    font-family: inherit;
   }
   .modal .close:hover { background: #d8dadb; }
 
+  /* Content frame — 298 wide, top 24px from card */
+  .modal-content {
+    position: absolute;
+    top: 24px;
+    left: 23px;
+    width: 298px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* hero → lower */
+  }
+
+  /* Hero (title + badge), 248 tall */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
   .modal h1 {
-    margin: 6px 0 0;
-    font-size: 24px; font-weight: 700;
+    margin: 0;
+    width: 100%;
     text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
     color: var(--text-primary);
-    line-height: 1.2;
   }
-  .modal .badge-wrap {
-    margin: 6px auto 0;
-    width: 170px; height: 200px;
-    display: flex; align-items: center; justify-content: center;
+  .badge-wrap {
+    width: 168px;
+    height: 202px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .modal .badge {
+  .badge {
     max-width: 100%; max-height: 100%;
     display: block;
   }
+
+  /* Lower (info + actions) */
+  .lower {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 38px;
+    width: 100%;
+  }
+
+  /* Info (body+amount stack + odds pill), gap 11 */
+  .info-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+  }
+
+  /* Body + amount (no gap between body and amount-wrap) */
+  .body-amount {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
   .modal .body {
-    margin: 6px 0 0;
-    font-size: 14px;
+    margin: 0;
+    width: 100%;
     text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
     color: var(--text-secondary);
   }
+
+  /* Amount frame — 174 wide, UGX overlaps amount by -8 */
+  .amount-wrap {
+    width: 174px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .modal .amount {
-    margin-top: 4px;
+    margin: 0;
     text-align: center;
-    font-size: 40px;
+    font-family: 'Roboto', sans-serif;
     font-weight: 700;
-    line-height: 1.05;
-    color: var(--text-primary);
+    font-size: 40px;
+    line-height: 47px;
     letter-spacing: -0.5px;
+    color: var(--text-primary);
     white-space: nowrap;
   }
   .modal .ugx {
-    margin-top: 0;
+    margin-top: -8px;
     text-align: center;
-    font-size: 12px; font-weight: 700;
-    color: var(--text-success);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
     letter-spacing: 1px;
-  }
-  .modal .odds-pill {
-    margin: 14px auto 0;
-    background: var(--bg-success);
     color: var(--text-success);
-    padding: 6px 14px;
-    border-radius: 14px;
-    font-size: 13px;
-    width: fit-content;
-    display: inline-flex; align-items: center; gap: 6px;
   }
-  .modal .odds-pill .with, .modal .odds-pill .label { color: var(--text-secondary); font-weight: 400; }
-  .modal .odds-pill .num { font-weight: 700; color: var(--text-success); }
-  .modal .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+
+  /* Odds pill — auto width, padding 6/12, gap 6 */
+  .odds-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-success);
+    border-radius: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .odds-pill .with, .odds-pill .label { color: var(--text-secondary); font-weight: 400; }
+  .odds-pill .num { color: var(--text-success); font-weight: 700; }
+
+  /* Actions — 208 wide, gap 8 */
+  .actions {
+    width: 208px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
   .modal .btn {
+    width: 208px;
     height: 40px;
-    border-radius: 4px;
     border: none;
-    font-family: inherit;
-    font-size: 14px; font-weight: 700;
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
     cursor: pointer;
@@ -171,18 +251,41 @@
     color: var(--text-primary);
   }
   .modal .btn.outline:hover { background: #f5f7f5; }
-  .modal hr {
+
+  /* Footer (divider + checkbox), pinned 16px from bottom */
+  .modal-footer {
+    position: absolute;
+    bottom: 16px;
+    left: 23px;
+    width: 298px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal-footer hr {
     border: none;
     border-top: 1px solid var(--border-default);
-    margin: 14px 0 10px;
+    margin: 0;
+    width: 100%;
+    height: 1px;
   }
   .modal .checkbox {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    cursor: pointer; user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
   }
-  .modal .checkbox input { accent-color: var(--text-success); width: 16px; height: 16px; }
+  .modal .checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--text-success);
+  }
 
   /* ─── Tier switcher (utility overlay) ─── */
   .tier-switcher {
@@ -249,29 +352,41 @@
 <div class="backdrop" id="backdrop"></div>
 <div class="modal" id="modal">
   <button class="close" id="closeBtn" aria-label="Close">×</button>
-  <h1 id="title">You called it.</h1>
-  <div class="badge-wrap">
-    <img class="badge" id="badge" src="assets/bronze.png" alt="" />
-  </div>
-  <p class="body" id="body">Right on the money:</p>
-  <div class="amount" id="amount">2,647.60</div>
-  <div class="ugx">UGX</div>
-  <div style="text-align:center;">
-    <div class="odds-pill">
-      <span class="with">with</span>
-      <span class="num" id="odds">5.67×</span>
-      <span class="label">odds</span>
+  <div class="modal-content">
+    <div class="hero">
+      <h1 id="title">You called it.</h1>
+      <div class="badge-wrap">
+        <img class="badge" id="badge" src="assets/bronze.png" alt="" />
+      </div>
+    </div>
+    <div class="lower">
+      <div class="info-stack">
+        <div class="body-amount">
+          <p class="body" id="body">Right on the money:</p>
+          <div class="amount-wrap">
+            <div class="amount" id="amount">2,647.60</div>
+            <div class="ugx">UGX</div>
+          </div>
+        </div>
+        <div class="odds-pill">
+          <span class="with">with</span>
+          <span class="num" id="odds">5.67×</span>
+          <span class="label">odds</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary">SHARE YOUR WIN</button>
+        <button class="btn outline">VIEW BETSLIP</button>
+      </div>
     </div>
   </div>
-  <div class="actions">
-    <button class="btn primary">SHARE YOUR WIN</button>
-    <button class="btn outline">VIEW BETSLIP</button>
+  <div class="modal-footer">
+    <hr />
+    <label class="checkbox">
+      <input type="checkbox" />
+      Turn off win notifications for 30 days
+    </label>
   </div>
-  <hr />
-  <label class="checkbox">
-    <input type="checkbox" />
-    Turn off win notifications for 30 days
-  </label>
 </div>
 
 <div class="hint">Press R to replay · Esc to close</div>
