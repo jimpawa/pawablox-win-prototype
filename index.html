@@ -1021,14 +1021,14 @@ function burstConfetti() {
   const y = (rect.top + rect.height / 2) / window.innerHeight;
   const t = tiers[currentTier];
   confetti({
-    particleCount: 220,
-    spread: 360,
+    particleCount: 160,
+    spread: 110,
     origin: { x, y },
     colors: t.colors,
     scalar: 1.8,
-    startVelocity: 60,
-    gravity: 0.8,
-    ticks: 320,
+    startVelocity: 55,
+    gravity: 0.9,
+    ticks: 280,
     zIndex: 200
   });
 }
