@@ -27,30 +27,95 @@
     background: #1c1f23;
     color: var(--pawa-text);
     min-height: 100vh;
+    overflow: hidden;
+  }
+  body {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* Phone frame */
+  /* ─── Mobile device frame ─── */
+  .device {
+    --device-w: 408px;
+    --device-h: 868px;
+    width: var(--device-w);
+    height: var(--device-h);
+    background: linear-gradient(160deg, #1a1d22 0%, #0a0c0f 100%);
+    border-radius: 52px;
+    padding: 16px;
+    position: relative;
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.55),
+      inset 0 0 0 2px #2a2d33;
+    transform-origin: center center;
+    transition: transform 200ms ease;
+  }
+  /* Notch */
+  .device::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 116px;
+    height: 28px;
+    background: #000;
+    border-radius: 16px;
+    z-index: 100;
+  }
+  /* Home indicator */
+  .device::after {
+    content: '';
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 124px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 2px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* Phone screen — inside the bezel */
   .phone {
     position: relative;
     width: 376px;
     height: 836px;
     background: #fff;
     overflow: hidden;
-    border-radius: 28px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+    border-radius: 38px;
   }
 
-  /* Homepage = exported Figma PNG */
+  /* Homepage = exported Figma PNG, scales with the phone */
   .homepage {
     position: absolute;
     inset: 0;
     background-image: url('assets/homepage.png');
-    background-size: 376px 836px;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: top left;
+  }
+
+  /* On small viewports, drop the bezel and let the screen fill */
+  @media (max-width: 460px) {
+    body { overflow: auto; }
+    .device {
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      background: #fff;
+    }
+    .device::before, .device::after { display: none; }
+    .phone {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
   }
 
   /* ─── Backdrop & modal ─── */
@@ -263,6 +328,7 @@
   <button data-tier="diamond">Diamond</button>
 </div>
 
+<div class="device" id="device">
 <div class="phone" id="phone">
   <div class="homepage"></div>
 
@@ -297,6 +363,7 @@
   </div>
 
   <canvas class="confetti-canvas" id="confetti"></canvas>
+</div>
 </div>
 
 <div class="hint">Press R to replay · Use tier buttons to switch</div>
@@ -445,8 +512,27 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') hideWin();
 });
 
+// Responsive scaling: shrink the device to fit any viewport
+function fitDevice() {
+  const device = document.getElementById('device');
+  if (window.innerWidth <= 460) {
+    device.style.transform = '';
+    return;
+  }
+  const margin = 32;
+  const sw = window.innerWidth - margin * 2;
+  const sh = window.innerHeight - margin * 2;
+  const dw = 408;
+  const dh = 868;
+  const scale = Math.min(sw / dw, sh / dh, 1);
+  device.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', fitDevice);
+fitDevice();
+
 loadTier(currentTier);
 window.addEventListener('load', () => {
+  fitDevice();
   setTimeout(showWin, 650);
 });
 </script>
