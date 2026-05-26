@@ -426,38 +426,28 @@
 
   .modal {
     position: fixed;
+    top: 50%;
     left: 50%;
-    bottom: -20px;
     width: calc(100% - 32px);
     max-width: 400px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
     background: var(--pawa-card);
     border-radius: 28px;
     padding: 24px 24px 16px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.22);
-    transform: translateX(-50%) translateY(140%);
+    /* Hidden: centred horizontally, pushed below viewport */
+    transform: translate(-50%, calc(-50% + 100vh));
     opacity: 0;
     transition:
-      transform 620ms cubic-bezier(.22,1.13,.45,1),
-      opacity 360ms ease,
-      bottom 620ms cubic-bezier(.22,1.13,.45,1);
+      transform 620ms cubic-bezier(.22, 1.13, .45, 1),
+      opacity 360ms ease;
     z-index: 101;
     display: flex; flex-direction: column;
   }
-  /* On wide screens, center the modal vertically */
-  @media (min-height: 760px) {
-    .modal {
-      bottom: 50%;
-      transform: translateX(-50%) translateY(50%) scale(0.94);
-    }
-    .modal.show {
-      bottom: 50%;
-      transform: translateX(-50%) translateY(50%) scale(1) !important;
-    }
-  }
   .modal.show {
-    transform: translateX(-50%) translateY(0);
+    transform: translate(-50%, -50%);
     opacity: 1;
-    bottom: 24px;
   }
 
   .modal .close {
