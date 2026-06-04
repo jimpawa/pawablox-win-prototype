@@ -3,331 +3,513 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>betPawa — Win Confirmed Prototype</title>
+<title>pawabloX — Win Confirmed Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
-  /* Exact betPawa design tokens from production */
   :root {
-    --bg-brand: #9ce800;
-    --bg-brand-accent: #8dc63f;
-    --bg-default: #f2f2f3;
-    --bg-secondary: #ffffff;
-    --bg-tertiary: #e4e6e7;
-    --bg-inverse-default: #252a2d;
-    --bg-success: #ecfccb;
-    --border-default: #e4e6e7;
-    --text-primary: #252a2d;
-    --text-secondary: #7a8185;
-    --text-success: #5b8506;
-    --text-on-brand: #252a2d;
+    /* betPawa dark-theme tokens (pulled from Figma "Homepage ✓") */
+    --chrome:     #171a1c;   /* header, nav tabs, bottom nav — always dark */
+    --chrome-pill:#2f3437;   /* header circle buttons + deposit pill */
+    --chrome-card:#252a2d;   /* nav fade */
+    --chrome-muted:#aaaeb0;  /* nav + bottom-nav labels */
+    --bg-page:    #171a1c;   /* themeable content/page bg */
+    --bg-card:    #252a2d;   /* match cards, combo cards, shortcut pills */
+    --bg-pill:    #2f3437;   /* circle buttons + deposit pill */
+    --bg-badgenum:#484f52;   /* small count badges */
+    --btn-bg:     #171a1c;   /* bet buttons, odds row, segmented control */
+    --brand:      #9ce800;   /* betPawa green */
+    --brand-dark: #3d5904;   /* USP "Why betPawa?" bar */
+    --on-brand:   #252a2d;   /* text/icons on green */
+    --text:       #ffffff;
+    --text-muted: #aaaeb0;
+    --live:       #ff7a00;
+    /* modal (light) tokens kept from original */
+    --pawa-green: #84d820;
+    --pawa-green-dark: #6cb31a;
+    --pawa-text: #0f1a14;
+    --pawa-text-soft: #56635a;
+    --pawa-line: #d8dcd9;
+    --pawa-card: #ffffff;
+    --odds-bg: #e8f5d8;
+    --odds-text: #4c8214;
   }
-
+  /* Light theme — content + cards + Account sheet flip; chrome stays dark */
+  .phone.light {
+    --bg-page:    #f2f2f3;
+    --bg-card:    #ffffff;
+    --bg-pill:    #e4e6e7;
+    --bg-badgenum:#d0d4d6;
+    --btn-bg:     #e9ecee;
+    --text:       #252a2d;
+    --text-muted: #6c7378;
+    --live:       #d35400;
+    /* win-modal tokens — LIGHT */
+    --pawa-card: #ffffff;
+    --pawa-text: #0f1a14;
+    --pawa-text-soft: #56635a;
+    --pawa-line: #d8dcd9;
+    --pawa-close-bg: #e6efe8;
+    --pawa-close-text: #0f1a14;
+    --pawa-hover: #f5f7f5;
+    --odds-bg: #e8f5d8;
+    --odds-text: #4c8214;
+  }
+  /* recolor elements that hardcode white in dark mode */
+  .phone.light .pill, .phone.light .pill i, .phone.light .pill .count,
+  .phone.light .sec-head .title, .phone.light .sec-head .collapse, .phone.light .sec-head .sport,
+  .phone.light .combo .team, .phone.light .combo .meta .time, .phone.light .combo .meta .date,
+  .phone.light .combo .sel .pick, .phone.light .combo .odds-row .val,
+  .phone.light .mcard .top .time, .phone.light .mcard .top .date, .phone.light .mcard .teams .t,
+  .phone.light .betbtn .od, .phone.light .betbtn.more, .phone.light .view-all,
+  .phone.light .sheet-head .close, .phone.light .acct-card .wbal, .phone.light .acct-card .phone-row,
+  .phone.light .acct-actions .wd, .phone.light .li, .phone.light .li i.lead,
+  .phone.light .seg span.on {
+    color: var(--text);
+  }
+  .phone.light .acct-actions .wd { border-color: var(--text); }
+  .phone.light .combo .nocash { background: rgba(0,0,0,0.08); color: var(--text); }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
-    font-family: 'Roboto', -apple-system, 'Segoe UI', Arial, sans-serif;
-    background: var(--bg-default);
-    color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* ─── Homepage (real Figma export, switched by breakpoint via <picture>) ─── */
-  .homepage-wrap {
-    display: flex; justify-content: center;
-    background: var(--bg-default);
-  }
-  .homepage {
-    display: block;
-    width: 100%;
-    max-width: 960px;
-    height: auto;
-  }
-  /* At small widths images already use full viewport. At ≥600 we cap the wrap to match design */
-
-  /* ─── Backdrop & modal ─── */
-  .backdrop {
-    position: fixed; inset: 0;
-    background: rgba(15, 26, 20, 0.55);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 360ms ease;
-    z-index: 100;
-  }
-  .backdrop.show { opacity: 1; pointer-events: auto; }
-
-  /* ── Modal — exact Figma Group 11 layout (344×640) ── */
-  .modal {
-    position: fixed;
-    top: 50%; left: 50%;
-    width: 344px;
-    max-width: calc(100vw - 24px);
-    height: 640px;
-    max-height: calc(100vh - 24px);
-    background: var(--bg-secondary);
-    border-radius: 28px;
-    padding: 0;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.22);
-    transform: translate(-50%, calc(-50% + 100vh));
-    opacity: 0;
-    transition:
-      transform 620ms cubic-bezier(.22, 1.13, .45, 1),
-      opacity 360ms ease;
-    z-index: 101;
-    overflow: hidden;
-  }
-  .modal.show {
-    transform: translate(-50%, -50%);
-    opacity: 1;
-  }
-
-  /* Close — Tonal Sm Circle (32×32), 12 inset from top-right of card */
-  .modal .close {
-    position: absolute;
-    top: 12px; right: 12px;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    cursor: pointer;
-    font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 2;
-    line-height: 1;
-    font-family: inherit;
-  }
-  .modal .close:hover { background: #d8dadb; }
-
-  /* Content frame — 298 wide, top 24px from card */
-  .modal-content {
-    position: absolute;
-    top: 24px;
-    left: 23px;
-    width: 298px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px; /* hero → lower */
-  }
-
-  /* Hero (title + badge), 248 tall */
-  .hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-  .modal h1 {
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 30px;
-    color: var(--text-primary);
-  }
-  .badge-wrap {
-    width: 168px;
-    height: 202px;
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    background: #1c1f23;
+    color: var(--text);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .badge {
-    max-width: 100%; max-height: 100%;
-    display: block;
+
+  /* ─── Phone frame ─── */
+  .phone {
+    position: relative;
+    width: 376px;
+    height: 836px;
+    background: var(--bg-page);
+    overflow: hidden;
+    border-radius: 28px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+    /* win-modal tokens — DARK by default (matches dark theme) */
+    --pawa-card: #252a2d;
+    --pawa-text: #ffffff;
+    --pawa-text-soft: #aaaeb0;
+    --pawa-line: rgba(255,255,255,0.12);
+    --pawa-close-bg: #2f3437;
+    --pawa-close-text: #ffffff;
+    --pawa-hover: rgba(255,255,255,0.06);
+    --odds-bg: #2a3a12;
+    --odds-text: #b6e84f;
   }
 
-  /* Lower (info + actions) */
-  .lower {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 38px;
-    width: 100%;
-  }
-
-  /* Info (body+amount stack + odds pill), gap 11 */
-  .info-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 11px;
-    width: 100%;
-  }
-
-  /* Body + amount (no gap between body and amount-wrap) */
-  .body-amount {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  .modal .body {
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--text-secondary);
-  }
-
-  /* Amount frame — 174 wide, UGX overlaps amount by -8 */
-  .amount-wrap {
-    width: 174px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .modal .amount {
-    margin: 0;
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    font-size: 40px;
-    line-height: 47px;
-    letter-spacing: -0.5px;
-    color: var(--text-primary);
-    white-space: nowrap;
-  }
-  .modal .ugx {
-    margin-top: -8px;
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 16px;
-    letter-spacing: 1px;
-    color: var(--text-success);
-  }
-
-  /* Odds pill — auto width, padding 6/12, gap 6 */
-  .odds-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: var(--bg-success);
-    border-radius: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    line-height: 20px;
-  }
-  .odds-pill .with, .odds-pill .label { color: var(--text-secondary); font-weight: 400; }
-  .odds-pill .num { color: var(--text-success); font-weight: 700; }
-
-  /* Actions — 208 wide, gap 8 */
-  .actions {
-    width: 208px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .modal .btn {
-    width: 208px;
-    height: 40px;
-    border: none;
-    border-radius: 4px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  .modal .btn.primary {
-    background: var(--bg-brand);
-    color: var(--text-on-brand);
-  }
-  .modal .btn.primary:hover { background: var(--bg-brand-accent); }
-  .modal .btn.outline {
-    background: transparent;
-    border: 1.5px solid var(--border-default);
-    color: var(--text-primary);
-  }
-  .modal .btn.outline:hover { background: #f5f7f5; }
-
-  /* Footer (divider + checkbox), pinned 16px from bottom */
-  .modal-footer {
+  /* ─── Homepage (real HTML) ─── */
+  .home {
     position: absolute;
-    bottom: 16px;
-    left: 23px;
-    width: 298px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--bg-page);
+    padding-bottom: 70px; /* room for fixed bottom nav */
+    -webkit-overflow-scrolling: touch;
   }
-  .modal-footer hr {
-    border: none;
-    border-top: 1px solid var(--border-default);
-    margin: 0;
-    width: 100%;
-    height: 1px;
+  .home::-webkit-scrollbar { width: 0; }
+
+  .topbar { position: sticky; top: 0; z-index: 5; background: var(--chrome); }
+
+  /* Header */
+  .hdr {
+    height: 48px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 12px; background: var(--chrome);
   }
-  .modal .checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--text-primary);
-    cursor: pointer;
-    user-select: none;
+  .logo { font-weight: 700; font-style: italic; font-size: 18px; letter-spacing: -0.5px; }
+  .logo .bet { color: #fff; }
+  .logo .pawa { color: var(--brand); }
+  .hdr-right { display: flex; align-items: center; gap: 8px; }
+  .circle-btn {
+    width: 32px; height: 32px; border-radius: 999px; border: none;
+    background: var(--chrome-pill); color: #fff; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
   }
-  .modal .checkbox input {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--text-success);
+  .deposit {
+    height: 32px; border-radius: 999px; background: var(--chrome-pill); color: #fff;
+    display: flex; align-items: center; gap: 8px; padding: 0 4px 0 12px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .deposit .plus {
+    width: 24px; height: 24px; border-radius: 999px; background: var(--brand);
+    color: var(--on-brand); display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
   }
 
-  /* ─── Tier switcher (utility overlay) ─── */
-  .tier-switcher {
-    position: fixed;
-    top: 12px; right: 12px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    z-index: 200;
+  /* Nav tabs */
+  .nav {
+    height: 40px; background: var(--chrome); display: flex; align-items: stretch;
+    overflow-x: auto; white-space: nowrap; position: relative;
   }
-  @media (min-width: 720px) {
-    .tier-switcher { top: 16px; right: 16px; flex-direction: row; }
+  .nav::-webkit-scrollbar { height: 0; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 6px; padding: 0 12px;
+    color: var(--chrome-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+    position: relative; cursor: pointer; flex: 0 0 auto;
+  }
+  .tab i { font-size: 14px; }
+  .tab.active { color: #fff; }
+  .tab.active::before {
+    content: ""; position: absolute; top: 0; left: 8px; right: 8px; height: 2px;
+    background: var(--brand);
+  }
+  .tab.home { padding: 0 14px; }
+  .nav-fade {
+    position: sticky; right: 0; flex: 0 0 auto; width: 38px; background: var(--chrome-card);
+    display: flex; align-items: center; justify-content: center; color: var(--brand);
+  }
+
+  /* USP bar */
+  .usp {
+    margin: 8px 12px 0; height: 28px; border-radius: 12px; overflow: hidden;
+  }
+  .usp-bar {
+    background: var(--brand-dark); height: 28px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 12px; color: #fff;
+    font-size: 14px; font-weight: 700;
+  }
+  .usp-bar i { font-size: 12px; }
+
+  /* League shortcut pills */
+  .pills {
+    display: flex; gap: 4px; overflow-x: auto; padding: 8px 12px 0; white-space: nowrap;
+  }
+  .pills::-webkit-scrollbar { height: 0; }
+  .pill {
+    flex: 0 0 auto; height: 36px; border-radius: 999px; background: var(--bg-card);
+    display: inline-flex; align-items: center; gap: 6px; padding: 0 12px;
+    font-size: 14px; color: #fff; cursor: pointer;
+  }
+  .pill .flag {
+    width: 18px; height: 18px; border-radius: 999px; background: #f5f5f5;
+    display: inline-block; flex: 0 0 auto;
+  }
+  .pill .count {
+    min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
+    background: var(--bg-badgenum); color: #fff; font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pill i { font-size: 13px; color: #fff; }
+
+  /* Section header */
+  .sec-head {
+    height: 40px; display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+  }
+  .sec-head .left { display: flex; align-items: center; gap: 8px; }
+  .sec-head .title { font-size: 16px; font-weight: 700; color: #fff; }
+  .sec-head .collapse { color: #fff; font-size: 14px; }
+  .sec-head .info { color: var(--text-muted); font-size: 13px; }
+  .badge-291 {
+    height: 24px; border-radius: 12px; background: var(--brand); color: var(--on-brand);
+    font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 2px;
+    padding: 0 8px;
+  }
+  .sec-head .sport { color: #fff; font-size: 14px; }
+
+  /* Combos carousel */
+  .combos-row {
+    display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 4px; scroll-snap-type: x mandatory;
+  }
+  .combos-row::-webkit-scrollbar { height: 0; }
+  .combo {
+    flex: 0 0 275px; scroll-snap-align: start; background: var(--bg-card); border-radius: 12px;
+    padding: 12px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .combo .meta { display: flex; align-items: center; gap: 6px; font-size: 12px; flex-wrap: wrap; }
+  .combo .meta .time { color: #fff; }
+  .combo .meta .date { color: #fff; font-weight: 700; }
+  .combo .meta .live { color: var(--live); font-weight: 500; }
+  .combo .meta .nocash {
+    margin-left: auto; background: rgba(255,255,255,0.12); color: #fff; font-size: 10px;
+    font-weight: 700; padding: 2px 6px; border-radius: 6px;
+  }
+  .combo .team-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .combo .team { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .combo .score { font-size: 18px; font-weight: 700; color: var(--live); }
+  .combo .cat { font-size: 12px; color: var(--text-muted); }
+  .combo .sel { display: flex; flex-direction: column; gap: 2px; }
+  .combo .sel .pick { font-size: 14px; font-weight: 700; color: #fff; }
+  .combo .sel .pick small { font-weight: 400; color: var(--text-muted); font-size: 12px; margin-left: 6px; }
+  .combo .odds-row {
+    margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+    background: var(--btn-bg); border-radius: 8px; padding: 10px 12px;
+  }
+  .combo .odds-row .lbl { color: var(--text-muted); font-size: 14px; }
+  .combo .odds-row .val { color: #fff; font-size: 14px; font-weight: 700; }
+
+  /* Match list */
+  .matchlist { display: flex; flex-direction: column; gap: 8px; padding: 0 12px; }
+  .mcard {
+    background: var(--bg-card); border-radius: 12px; padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .mcard .top { display: flex; align-items: center; gap: 6px; font-size: 12px; min-height: 16px; }
+  .mcard .top .flag { width: 16px; height: 16px; border-radius: 999px; background: #f5f5f5; flex: 0 0 auto; }
+  .mcard .top .time { color: #fff; }
+  .mcard .top .date { color: #fff; font-weight: 700; }
+  .mcard .top .live { color: var(--live); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+  .mcard .top .tags { margin-left: auto; display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+  .mcard .top .tags i { font-size: 12px; }
+  .mcard .top .tags .fire { color: var(--live); }
+  .mcard .teams { display: flex; flex-direction: column; }
+  .mcard .teams .t { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.5; }
+  .mcard .cat { font-size: 12px; color: var(--text-muted); }
+  .betline { display: flex; gap: 8px; }
+  .betbtn {
+    flex: 1; height: 36px; background: var(--btn-bg); border-radius: 8px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
+    cursor: pointer;
+  }
+  .betbtn .sel { color: var(--text-muted); font-size: 14px; }
+  .betbtn .od { color: #fff; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; }
+  .betbtn .od i { color: var(--live); font-size: 12px; }
+  .betbtn.more {
+    flex: 0 0 28px; padding: 0; justify-content: center; gap: 2px; background: transparent;
+    color: #fff; font-size: 14px; font-weight: 700;
+  }
+  .betbtn.more i { font-size: 11px; }
+
+  .view-all {
+    margin: 8px 12px 0; height: 36px; border-radius: 8px; background: transparent;
+    border: none; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .view-all i { font-size: 13px; }
+
+  .section { padding-top: 4px; }
+
+  /* Games row */
+  .games-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 4px; }
+  .games-row::-webkit-scrollbar { height: 0; }
+  .game-tile {
+    flex: 0 0 96px; height: 96px; border-radius: 12px; position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; padding: 8px; color: #fff; font-size: 11px; font-weight: 700;
+  }
+
+  /* ─── Bottom nav (fixed) ─── */
+  .bottom {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
+  }
+  .promo {
+    height: 20px; background: var(--brand); color: var(--on-brand);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 12px;
+    font-size: 12px; gap: 8px; overflow: hidden; white-space: nowrap;
+  }
+  .promo .b { font-weight: 700; }
+  .promo .reg { font-weight: 400; }
+  .bnav {
+    height: 50px; background: var(--chrome); display: flex; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .bnav .item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    color: var(--chrome-muted); font-size: 12px; cursor: pointer; position: relative;
+  }
+  .bnav .item i { font-size: 18px; }
+  .bnav .item .num {
+    position: absolute; top: -4px; right: 16px; min-width: 16px; height: 16px;
+    background: var(--brand); color: var(--on-brand); border-radius: 999px;
+    font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    padding: 0 4px;
+  }
+
+  /* ─── Account bottom sheet ─── */
+  .sheet-backdrop {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.55);
+    opacity: 0; pointer-events: none; transition: opacity 300ms ease; z-index: 25;
+  }
+  .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
+  .acct-sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 26;
+    background: var(--bg-page); border-radius: 20px 20px 0 0;
+    height: 94%; display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform 420ms cubic-bezier(.22,1,.36,1);
+    box-shadow: 0 -20px 50px rgba(0,0,0,0.5); overflow: hidden;
+  }
+  .acct-sheet.show { transform: translateY(0); }
+
+  /* stacked pages (push navigation) */
+  .acct-pages { position: relative; flex: 1 1 auto; overflow: hidden; }
+  .acct-page {
+    position: absolute; inset: 0; overflow-y: auto; background: var(--bg-page);
+    transition: transform 340ms cubic-bezier(.22,1,.36,1);
+  }
+  .acct-page::-webkit-scrollbar { width: 0; }
+  #acctBadges { transform: translateX(100%); }
+  .acct-pages.show-badges #acctMain { transform: translateX(-25%); }
+  .acct-pages.show-badges #acctBadges { transform: translateX(0); }
+
+  .acct-scroll { padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* badges sub-page */
+  .badges-topbar {
+    position: sticky; top: 0; z-index: 2; background: var(--bg-page);
+    display: flex; align-items: center; gap: 8px; padding: 12px; min-height: 56px;
+  }
+  .back-btn {
+    width: 32px; height: 32px; border-radius: 999px; background: var(--bg-pill);
+    color: var(--text); border: none; cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .badges-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .badges-topbar .close-right { margin-left: auto; }
+  .badges-scroll { padding: 0 12px 24px; }
+  .badges-intro { background: var(--bg-card); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+  .bi-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .bi-sub { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+  .wins-summary { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+  .wins-summary b { color: var(--text); font-weight: 700; }
+  .win-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .win-badge {
+    background: var(--bg-card); border-radius: 14px; padding: 16px 12px 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+    cursor: pointer; transition: transform 120ms ease;
+  }
+  .win-badge:hover { transform: translateY(-2px); }
+  .win-badge img { width: 84px; height: 92px; object-fit: contain; margin-bottom: 4px; }
+  .wb-tier { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .6px; }
+  .wb-amount { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .wb-cur { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+  .wb-odds { font-size: 12px; font-weight: 700; color: var(--odds-text); }
+  .wb-date { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  .sheet-head { display: flex; align-items: center; justify-content: flex-end; }
+  .sheet-head .close {
+    width: 32px; height: 32px; border-radius: 999px; background: var(--bg-pill);
+    color: #fff; border: none; cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .acct-card {
+    background: var(--bg-card); border-radius: 12px; padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .acct-card .wlabel { color: var(--text-muted); font-size: 14px; }
+  .acct-card .wbal { font-size: 28px; font-weight: 700; color: #fff; }
+  .acct-card .phone-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #fff; }
+  .acct-card .verified { color: var(--brand); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+  .voda { width: 20px; height: 20px; border-radius: 4px; background: #e60000; display: flex; align-items: center; justify-content: center; }
+  .voda::after { content: ""; width: 8px; height: 8px; border-radius: 999px; border: 2px solid #fff; }
+  .acct-actions { display: flex; gap: 12px; width: 100%; margin-top: 4px; }
+  .acct-actions button { flex: 1; height: 44px; border-radius: 8px; font-family: inherit; font-weight: 700; font-size: 14px; letter-spacing: .4px; cursor: pointer; }
+  .acct-actions .dep { background: var(--brand); color: var(--on-brand); border: none; }
+  .acct-actions .wd { background: transparent; color: #fff; border: 1.5px solid #fff; }
+
+  .grp-label { color: var(--text-muted); font-size: 12px; padding: 0 12px; }
+  .list-card { background: var(--bg-card); border-radius: 12px; padding: 4px 0; }
+  .li { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 12px; color: #fff; font-size: 16px; cursor: pointer; }
+  .li i.lead { width: 24px; text-align: center; font-size: 18px; color: #fff; }
+  .li .grow { flex: 1; }
+  .li .chev { color: var(--text-muted); font-size: 14px; }
+  .li .count-badge { background: var(--brand); color: var(--on-brand); border-radius: 999px; min-width: 20px; height: 20px; padding: 0 6px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .new-badge { background: var(--brand); color: var(--on-brand); border-radius: 999px; font-size: 10px; font-weight: 700; padding: 3px 8px; letter-spacing: .3px; }
+  .seg { display: flex; background: var(--btn-bg); border-radius: 999px; padding: 2px; }
+  .seg span { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+  .seg span.on { background: var(--bg-pill); color: #fff; }
+  .switch { width: 44px; height: 24px; border-radius: 999px; background: var(--bg-pill); position: relative; cursor: pointer; flex: 0 0 auto; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 999px; background: #fff; transition: left 160ms; }
+  .switch.on { background: var(--brand); }
+  .switch.on::after { left: 23px; }
+
+  .pwa-banner { background: var(--brand-dark); border-radius: 16px; padding: 12px; display: flex; align-items: center; gap: 12px; color: #fff; }
+  .pwa-banner .appicon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg,#3a4145,#1e2326); display: flex; align-items: center; justify-content: center; font-weight: 800; font-style: italic; flex: 0 0 auto; }
+  .pwa-banner .appicon b { color: #fff; } .pwa-banner .appicon i { color: var(--brand); font-style: italic; }
+  .pwa-banner .txt { flex: 1; font-size: 14px; line-height: 1.35; }
+  .pwa-banner .add { font-weight: 700; text-decoration: underline; }
+  .pwa-banner .x { color: #fff; cursor: pointer; align-self: flex-start; }
+  .bp-logo { font-weight: 800; font-style: italic; font-size: 16px; color: var(--text-muted); width: 24px; text-align: center; }
+  .li.logout, .li.logout i { color: #ff5b4a; }
+
+  /* My Badges expandable */
+  .li .chev { transition: transform 200ms ease; }
+  .li.open .chev { transform: rotate(180deg); }
+  .badges-panel { max-height: 0; overflow: hidden; transition: max-height 320ms ease; }
+  .badges-panel.open { max-height: 360px; }
+  .badges-head { padding: 0 12px 8px; font-size: 12px; color: var(--text-muted); }
+  .badges-head b { color: var(--brand); font-weight: 700; }
+  .badges-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 12px 12px; }
+  .badge-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+  .badge-cell img { width: 60px; height: 68px; object-fit: contain; }
+  .badge-cell span { font-size: 11px; color: var(--text); font-weight: 700; }
+  .badge-cell.locked img { filter: grayscale(1) brightness(0.55); opacity: 0.45; }
+  .badge-cell.locked span { color: var(--text-muted); font-weight: 400; }
+  .badge-cell .lock {
+    position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+    color: var(--text); font-size: 16px; opacity: 0.85;
+  }
+
+  /* ─── Backdrop & modal (unchanged) ─── */
+  .backdrop {
+    position: absolute; inset: 0;
+    background: rgba(15, 26, 20, 0.55);
+    opacity: 0; pointer-events: none;
+    transition: opacity 360ms ease; z-index: 40;
+  }
+  .backdrop.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    position: absolute; left: 16px; width: 344px; top: 80px;
+    background: var(--pawa-card); border-radius: 28px; padding: 24px 24px 16px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.18);
+    transform: translateY(140%); opacity: 0;
+    transition: transform 620ms cubic-bezier(.22,1.13,.45,1), opacity 360ms ease;
+    z-index: 41; display: flex; flex-direction: column; color: var(--pawa-text);
+  }
+  .modal.show { transform: translateY(0); opacity: 1; }
+  .modal .close {
+    position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
+    border-radius: 50%; border: none; background: var(--pawa-close-bg); color: var(--pawa-close-text);
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 2;
+  }
+  .modal .close:hover { filter: brightness(1.1); }
+  .modal h1 { margin: 6px 0 0; font-size: 24px; font-weight: 700; text-align: center; line-height: 1.2; }
+  .modal .badge-wrap { margin: 6px auto 0; width: 170px; height: 200px; display: flex; align-items: center; justify-content: center; }
+  .modal .badge { max-width: 100%; max-height: 100%; display: block; }
+  .modal .body { margin: 6px 0 0; font-size: 14px; text-align: center; color: var(--pawa-text-soft); }
+  .modal .amount { margin-top: 4px; text-align: center; font-size: 40px; font-weight: 700; line-height: 1.05; letter-spacing: -0.5px; white-space: nowrap; }
+  .modal .ugx { text-align: center; font-size: 12px; font-weight: 700; color: var(--pawa-green-dark); letter-spacing: 1px; }
+  .modal .odds-pill {
+    margin: 14px auto 0; background: var(--odds-bg); color: var(--odds-text); padding: 6px 14px;
+    border-radius: 14px; font-size: 13px; width: fit-content; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .modal .odds-pill .with, .modal .odds-pill .label { color: var(--pawa-text-soft); font-weight: 400; }
+  .modal .odds-pill .num { font-weight: 700; color: var(--odds-text); }
+  .modal .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+  .modal .btn {
+    height: 40px; border-radius: 6px; border: none; font-family: inherit; font-size: 14px;
+    font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer;
+    transition: filter 120ms ease, background 120ms ease;
+  }
+  .modal .btn.primary { background: var(--pawa-green); color: var(--pawa-text); }
+  .modal .btn.primary:hover { background: var(--pawa-green-dark); color: #fff; }
+  .modal .btn.outline { background: transparent; border: 1.5px solid var(--pawa-line); color: var(--pawa-text); }
+  .modal .btn.outline:hover { background: var(--pawa-hover); }
+  .modal hr { border: none; border-top: 1px solid var(--pawa-line); margin: 14px 0 10px; }
+  .modal .checkbox { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--pawa-text-soft); cursor: pointer; user-select: none; }
+  .modal .checkbox input { accent-color: var(--pawa-green-dark); width: 16px; height: 16px; }
+
+  .confetti-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 42; }
+
+  /* Tier switcher */
+  .tier-switcher {
+    position: fixed; top: 20px; left: 20px; background: #fff; border-radius: 10px; padding: 6px;
+    display: flex; gap: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 50;
   }
   .tier-switcher button {
-    background: transparent; border: none;
-    padding: 6px 10px;
-    font-size: 11px; font-weight: 700;
-    color: #555;
-    cursor: pointer;
-    border-radius: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-family: inherit;
+    background: transparent; border: none; padding: 8px 12px; font-size: 12px; font-weight: 700;
+    color: #555; cursor: pointer; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.4px; font-family: inherit;
   }
-  .tier-switcher button.active { background: var(--bg-brand); color: var(--text-on-brand); }
+  .tier-switcher button.active { background: var(--pawa-green); color: var(--pawa-text); }
   .tier-switcher button:not(.active):hover { background: #f3f5f4; }
-
-  .hint {
-    position: fixed; bottom: 16px; left: 16px;
-    color: rgba(255,255,255,0.85);
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(6px);
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 11px;
-    user-select: none;
-    z-index: 50;
-  }
+  .hint { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: #95a3a7; font-size: 12px; user-select: none; }
 </style>
 </head>
 <body>
@@ -340,188 +522,462 @@
   <button data-tier="diamond">Diamond</button>
 </div>
 
-<!-- Real Figma export of the homepage, swapped by viewport width -->
-<div class="homepage-wrap">
-  <picture>
-    <source media="(max-width: 359px)" srcset="assets/home-320.png" />
-    <source media="(max-width: 519px)" srcset="assets/home-376.png" />
-    <img class="homepage" src="assets/home-600.png" alt="betPawa homepage" />
-  </picture>
-</div>
+<div class="phone" id="phone">
 
-<div class="backdrop" id="backdrop"></div>
-<div class="modal" id="modal">
-  <button class="close" id="closeBtn" aria-label="Close">×</button>
-  <div class="modal-content">
-    <div class="hero">
-      <h1 id="title">You called it.</h1>
-      <div class="badge-wrap">
-        <img class="badge" id="badge" src="assets/bronze.png" alt="" />
+  <!-- ─── Homepage ─── -->
+  <div class="home" id="home">
+    <div class="topbar">
+      <!-- Header -->
+      <div class="hdr">
+        <div class="logo"><span class="bet">bet</span><span class="pawa">Pawa</span></div>
+        <div class="hdr-right">
+          <button class="circle-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+          <div class="deposit">GHE 882.10 <span class="plus"><i class="fa-solid fa-plus"></i></span></div>
+          <button class="circle-btn"><i class="fa-solid fa-user"></i></button>
+        </div>
       </div>
+      <!-- Nav tabs -->
+      <div class="nav" id="nav"></div>
     </div>
-    <div class="lower">
-      <div class="info-stack">
-        <div class="body-amount">
-          <p class="body" id="body">Right on the money:</p>
-          <div class="amount-wrap">
-            <div class="amount" id="amount">2,647.60</div>
-            <div class="ugx">UGX</div>
-          </div>
+
+    <!-- USP -->
+    <div class="usp">
+      <div class="usp-bar">Why betPawa? <i class="fa-solid fa-chevron-down"></i></div>
+    </div>
+
+    <!-- League shortcut pills -->
+    <div class="pills" id="pills"></div>
+
+    <!-- Popular Combos -->
+    <div class="section">
+      <div class="sec-head">
+        <div class="left">
+          <i class="fa-solid fa-chevron-up collapse"></i>
+          <span class="title">Popular Combos</span>
+          <i class="fa-solid fa-circle-info info"></i>
         </div>
-        <div class="odds-pill">
-          <span class="with">with</span>
-          <span class="num" id="odds">5.67×</span>
-          <span class="label">odds</span>
-        </div>
+        <span class="badge-291"><i class="fa-solid fa-futbol" style="font-size:12px;color:var(--on-brand)"></i> 291</span>
       </div>
-      <div class="actions">
-        <button class="btn primary">SHARE YOUR WIN</button>
-        <button class="btn outline">VIEW BETSLIP</button>
-      </div>
+      <div class="combos-row" id="combos"></div>
+    </div>
+
+    <!-- Match-list sections injected here -->
+    <div id="sections"></div>
+  </div>
+
+  <!-- ─── Bottom nav ─── -->
+  <div class="bottom">
+    <div class="promo">
+      <span><span class="reg">Add 3 legs to your betslip to earn up to a</span> <span class="b">1000% Win Bonus.</span></span>
+      <span class="b">Odds: 271…</span>
+    </div>
+    <div class="bnav">
+      <div class="item"><i class="fa-solid fa-bars"></i>Menu</div>
+      <div class="item"><i class="fa-solid fa-futbol"></i>Sports</div>
+      <div class="item"><i class="fa-solid fa-receipt"></i><span class="num">8</span>Betslip</div>
+      <div class="item"><i class="fa-solid fa-clipboard-list"></i>My bets</div>
+      <div class="item" id="accountBtn"><i class="fa-solid fa-user"></i>Account</div>
     </div>
   </div>
-  <div class="modal-footer">
+
+  <!-- ─── Account bottom sheet ─── -->
+  <div class="sheet-backdrop" id="acctBackdrop"></div>
+  <div class="acct-sheet" id="acctSheet">
+    <div class="acct-pages" id="acctPages">
+    <div class="acct-page" id="acctMain"><div class="acct-scroll">
+      <div class="sheet-head">
+        <button class="close" id="acctClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Wallet header -->
+      <div class="acct-card">
+        <div class="wlabel">Wallet Balance</div>
+        <div class="wbal">GH₵ 882.10</div>
+        <div class="phone-row">
+          <span class="voda"></span>+243 7073457532
+          <span class="verified"><i class="fa-solid fa-circle-check"></i> Verified</span>
+        </div>
+        <div class="acct-actions">
+          <button class="dep">DEPOSIT</button>
+          <button class="wd">WITHDRAW</button>
+        </div>
+      </div>
+
+      <!-- My Account -->
+      <div class="grp-label">My Account</div>
+      <div class="list-card">
+        <div class="li"><i class="fa-solid fa-language lead"></i><span class="grow">Change language</span>
+          <span class="seg"><span class="on">EN</span><span>FR</span></span></div>
+        <div class="li"><i class="fa-solid fa-bell lead"></i><span class="grow">Notifications</span>
+          <span class="count-badge">8</span></div>
+        <div class="li"><i class="fa-solid fa-user-gear lead"></i><span class="grow">Manage account</span>
+          <i class="fa-solid fa-chevron-down chev"></i></div>
+        <div class="li"><i class="fa-solid fa-clipboard-list lead"></i><span class="grow">My bets</span></div>
+        <div class="li" id="badgesNav"><i class="fa-solid fa-medal lead"></i><span class="grow">My Badges</span>
+          <i class="fa-solid fa-chevron-right chev"></i></div>
+        <div class="li"><i class="fa-solid fa-file-lines lead"></i><span class="grow">Statement</span></div>
+        <div class="li"><i class="fa-solid fa-circle-half-stroke lead"></i><span>Dark Theme</span>
+          <span class="new-badge">NEW</span><span class="grow"></span>
+          <span class="switch on" id="darkToggle"></span></div>
+      </div>
+
+      <!-- General -->
+      <div class="grp-label">General</div>
+      <div class="list-card">
+        <div class="li"><i class="fa-solid fa-circle-question lead"></i><span class="grow">Help Center</span>
+          <i class="fa-solid fa-chevron-down chev"></i></div>
+        <div class="li"><span class="bp-logo">bP</span><span class="grow">More on betPawa</span>
+          <i class="fa-solid fa-chevron-down chev"></i></div>
+        <div class="li"><i class="fa-solid fa-mobile-screen-button lead"></i><span>Add betPawa App</span>
+          <span class="new-badge">NEW</span><span class="grow"></span></div>
+      </div>
+
+      <!-- PWA banner -->
+      <div class="pwa-banner">
+        <div class="appicon"><b>b</b><i>P</i></div>
+        <div class="txt">Add the betPawa app to your Home Screen.<br><span class="add">ADD</span></div>
+        <i class="fa-solid fa-xmark x"></i>
+      </div>
+
+      <!-- Log out -->
+      <div class="list-card">
+        <div class="li logout"><i class="fa-solid fa-right-from-bracket lead"></i><span class="grow">Log Out</span></div>
+      </div>
+    </div></div><!-- /.acct-scroll /#acctMain -->
+
+    <!-- Badges sub-page (pushed in) -->
+    <div class="acct-page" id="acctBadges">
+      <div class="badges-topbar">
+        <button class="back-btn" id="badgesBack" aria-label="Back"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="badges-title">My Badges</span>
+        <button class="back-btn close-right" id="badgesClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="badges-scroll">
+        <div class="win-grid" id="winGrid"></div>
+      </div>
+    </div>
+
+    </div><!-- /.acct-pages -->
+  </div>
+
+  <!-- ─── Win modal ─── -->
+  <div class="backdrop" id="backdrop"></div>
+  <div class="modal" id="modal">
+    <button class="close" id="closeBtn" aria-label="Close">✕</button>
+    <h1 id="title">You called it.</h1>
+    <div class="badge-wrap"><img class="badge" id="badge" src="assets/bronze.png" alt="" /></div>
+    <p class="body" id="body">Right on the money:</p>
+    <div class="amount" id="amount">2,647.60</div>
+    <div class="ugx">UGX</div>
+    <div style="text-align:center;">
+      <div class="odds-pill"><span class="with">with</span><span class="num" id="odds">5.67×</span><span class="label">odds</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary">SHARE YOUR WIN</button>
+      <button class="btn outline">VIEW BETSLIP</button>
+    </div>
     <hr />
-    <label class="checkbox">
-      <input type="checkbox" />
-      Turn off win notifications for 30 days
-    </label>
+    <label class="checkbox"><input type="checkbox" /> Turn off win notifications for 30 days</label>
   </div>
+
+  <canvas class="confetti-canvas" id="confetti"></canvas>
 </div>
 
-<div class="hint">Press R to replay · Esc to close</div>
+<div class="hint">Press R to replay · Use tier buttons to switch</div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-const tiers = {
-  bronze: {
-    badge: 'assets/bronze.png',
-    title: 'You called it.',
-    body: 'Right on the money:',
-    amount: '2,647.60',
-    odds: '5.67×',
-    colors: ['#6B3F1F', '#B8703D', '#D89060', '#F4A57E', '#FFD49A']
+/* ─────────────── Homepage data + render ─────────────── */
+const NAV_TABS = [
+  { icon: 'fa-house', label: '', home: true, active: true },
+  { icon: 'fa-futbol', label: 'SPORTS' },
+  { icon: 'fa-bolt', label: 'LIVE' },
+  { icon: 'fa-dice', label: 'CASINO' },
+  { icon: 'fa-plane', label: 'AVIATOR' },
+  { icon: 'fa-gamepad', label: 'VIRTUALS' },
+  { icon: 'fa-dice-six', label: 'PAWA 6' },
+  { icon: 'fa-trophy', label: 'JACKPOT' },
+];
+const PILLS = [
+  { icon: 'fa-bolt', label: 'Live now', count: '8' },
+  { flag: '#e8453c', label: 'Premier League', count: '8' },
+  { flag: '#008c45', label: 'Serie A', count: '12' },
+  { flag: '#0055a4', label: 'Ligue 1', count: '6' },
+  { flag: '#0701a1', label: 'Champions League', count: '24' },
+  { icon: 'fa-fire', label: 'Boosted', count: '9' },
+];
+const COMBOS = [
+  {
+    time: '3:00PM', date: 'Wed 16/12', nocash: true,
+    teamA: 'Chelsea FC', teamB: 'Paris Saint-Germain (n)',
+    cat: 'Football / International / FIFA Club World Cup',
+    sels: [['Under 3.5','Over/Under | Full Time'],['Over 10.5','Total Corners Over/Under | Full Time']],
+    odds: '4.35'
   },
-  silver: {
-    badge: 'assets/silver.png',
-    title: "You're untouchable.",
-    body: 'Untouchable reward:',
-    amount: '112,132.30',
-    odds: '123.03×',
-    colors: ['#8A95A2', '#A8B2BD', '#C8D0D8', '#E5E9ED', '#ffffff']
+  {
+    live: "Live 20'", nocash: true,
+    teamA: 'Real Madrid', teamB: 'Manchester City', scoreA: '1', scoreB: '0',
+    cat: 'Football / International / UEFA Champions League',
+    sels: [['Both Teams To Score','Yes | Full Time'],['Over 2.5','Over/Under | Full Time']],
+    odds: '3.12'
   },
-  gold: {
-    badge: 'assets/gold.png',
-    title: 'On top of your game.',
-    body: 'Crowning your run:',
-    amount: '52,347.60',
-    odds: '56.90×',
-    colors: ['#B8841A', '#E5A823', '#F4C842', '#FFD966', '#FFF0A0']
+  {
+    time: '8:45PM', date: 'Sat 19/12', nocash: false,
+    teamA: 'Arsenal', teamB: 'Liverpool',
+    cat: 'Football / England / Premier League',
+    sels: [['Arsenal or Draw','Double Chance'],['Over 1.5','Over/Under | Full Time']],
+    odds: '2.05'
   },
-  platinum: {
-    badge: 'assets/platinum.png',
-    title: 'That was pure class.',
-    body: 'Classy payout:',
-    amount: '24,427.20',
-    odds: '26.89×',
-    colors: ['#7B8A99', '#A0AEC0', '#CBD5E0', '#FFB6D9', '#A8E5F5']
-  },
-  diamond: {
-    badge: 'assets/diamond.png',
-    title: 'Legendary play.',
-    body: 'Legendary haul:',
-    amount: '100,005,000.60',
-    odds: '1023.87×',
-    colors: ['#1E3A8A', '#2563EB', '#4A90E2', '#7BB3F0', '#A8DCFF']
+];
+
+const TEAMS = [
+  ['St George Willawong FC','Olympic FC Brisbane','Football / Australia / Queensland NPL'],
+  ['Eastern Suburbs','Lions FC','Football / Australia / Queensland NPL'],
+  ['Brisbane Roar','Gold Coast Knights','Football / Australia / NPL Queensland'],
+  ['Sunshine Coast','Moreton Bay United','Football / Australia / Queensland NPL'],
+  ['Peninsula Power','Brisbane City','Football / Australia / Queensland NPL'],
+];
+function makeCards(n, opts={}) {
+  const cards = [];
+  for (let i = 0; i < n; i++) {
+    const t = TEAMS[i % TEAMS.length];
+    const live = opts.live && i === 0;
+    cards.push({
+      live,
+      time: '10:30PM', date: 'Wed 28/05',
+      teamA: t[0], teamB: t[1], cat: t[2],
+      markets: [
+        { sel: '1', odds: '4.35', fire: i === 0 },
+        { sel: 'X', odds: '4.35' },
+        { sel: '2', odds: '4.35', fire: i === 0 },
+      ],
+      more: ['83','+12','+9'][i % 3],
+    });
   }
+  return cards;
+}
+const SECTIONS = [
+  { title: 'Boosted',   icon: 'fa-fire',     view: 'View more Boosted (291)',   cards: makeCards(3) },
+  { title: 'Football',  icon: 'fa-futbol',   view: 'View all Football (291)',   cards: makeCards(3) },
+  { title: 'Live now',  icon: 'fa-bolt',     view: 'View more Live (291)',      cards: makeCards(3, {live:true}) },
+  { title: 'Games', games: true, icon: 'fa-dice', view: 'View more Games (291)' },
+  { title: 'eFootball', icon: 'fa-gamepad',  view: 'View more eFootball (291)', cards: makeCards(3) },
+  { title: 'Basketball',icon: 'fa-basketball', view: 'View more Basketball (291)', cards: makeCards(3) },
+  { title: 'Tennis',    icon: 'fa-table-tennis-paddle-ball', view: 'View more Tennis (291)', cards: makeCards(2) },
+];
+const GAMES = [
+  { name: 'Aviator', g: 'linear-gradient(135deg,#b91c1c,#7f1d1d)' },
+  { name: 'Sweet Bonanza', g: 'linear-gradient(135deg,#db2777,#7e22ce)' },
+  { name: 'Gates of Olympus', g: 'linear-gradient(135deg,#2563eb,#1e3a8a)' },
+  { name: 'Spinner', g: 'linear-gradient(135deg,#059669,#064e3b)' },
+  { name: 'Big Bass', g: 'linear-gradient(135deg,#0891b2,#0e7490)' },
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function renderNav() {
+  document.getElementById('nav').innerHTML =
+    NAV_TABS.map(t =>
+      `<div class="tab${t.home?' home':''}${t.active?' active':''}">`+
+      `<i class="fa-solid ${t.icon}"></i>${t.label?esc(t.label):''}</div>`
+    ).join('') +
+    `<div class="nav-fade"><i class="fa-solid fa-chevron-down"></i></div>`;
+}
+function renderPills() {
+  document.getElementById('pills').innerHTML = PILLS.map(p =>
+    `<div class="pill">`+
+    (p.flag ? `<span class="flag" style="background:${p.flag}"></span>` : `<i class="fa-solid ${p.icon}"></i>`)+
+    `${esc(p.label)}<span class="count">${esc(p.count)}</span></div>`
+  ).join('');
+}
+function renderCombos() {
+  document.getElementById('combos').innerHTML = COMBOS.map(c => `
+    <div class="combo">
+      <div class="meta">
+        ${c.live ? `<span class="live"><i class="fa-solid fa-bolt"></i> ${esc(c.live)}</span>`
+                 : `<span class="time">${esc(c.time)}</span> <span class="date">${esc(c.date)}</span>`}
+        ${c.nocash ? `<span class="nocash">No In-Play Cashout</span>` : ``}
+      </div>
+      <div class="team-row"><span class="team">${esc(c.teamA)}</span>${c.scoreA?`<span class="score">${esc(c.scoreA)}</span>`:''}</div>
+      <div class="team-row"><span class="team">${esc(c.teamB)}</span>${c.scoreB?`<span class="score">${esc(c.scoreB)}</span>`:''}</div>
+      <div class="cat">${esc(c.cat)}</div>
+      ${c.sels.map(s => `<div class="sel"><span class="pick">${esc(s[0])}<small>${esc(s[1])}</small></span></div>`).join('')}
+      <div class="odds-row"><span class="lbl">Total odds</span><span class="val">${esc(c.odds)}</span></div>
+    </div>`).join('');
+}
+function matchCard(c) {
+  const top = c.live
+    ? `<span class="live"><i class="fa-solid fa-bolt"></i> Live</span>`
+    : `<span class="flag"></span><span class="time">${esc(c.time)}</span><span class="date">${esc(c.date)}</span>`;
+  return `
+    <div class="mcard">
+      <div class="top">
+        ${top}
+        <span class="tags"><i class="fa-solid fa-circle-up"></i><i class="fa-solid fa-fire fire"></i><i class="fa-solid fa-chart-simple"></i></span>
+      </div>
+      <div class="teams"><span class="t">${esc(c.teamA)}</span><span class="t">${esc(c.teamB)}</span></div>
+      <div class="cat">${esc(c.cat)}</div>
+      <div class="betline">
+        ${c.markets.map(m => `
+          <div class="betbtn"><span class="sel">${esc(m.sel)}</span>
+            <span class="od">${m.fire?'<i class="fa-solid fa-fire"></i>':''}${esc(m.odds)}</span></div>`).join('')}
+        <div class="betbtn more">${esc(c.more)}<i class="fa-solid fa-chevron-right"></i></div>
+      </div>
+    </div>`;
+}
+function renderSections() {
+  document.getElementById('sections').innerHTML = SECTIONS.map(s => `
+    <div class="section">
+      <div class="sec-head">
+        <div class="left">
+          <i class="fa-solid fa-chevron-up collapse"></i>
+          <span class="title">${esc(s.title)}</span>
+        </div>
+        <span class="badge-291"><i class="fa-solid ${s.icon}" style="font-size:12px;color:var(--on-brand)"></i> 291</span>
+      </div>
+      ${s.games
+        ? `<div class="games-row">${GAMES.map(g => `<div class="game-tile" style="background:${g.g}">${esc(g.name)}</div>`).join('')}</div>`
+        : `<div class="matchlist">${s.cards.map(matchCard).join('')}</div>`}
+      <button class="view-all"><i class="fa-solid ${s.icon}"></i> ${esc(s.view)} <i class="fa-solid fa-chevron-right"></i></button>
+    </div>`).join('');
+}
+renderNav(); renderPills(); renderCombos(); renderSections();
+
+/* ─────────────── Win modal (unchanged behavior) ─────────────── */
+const tiers = {
+  bronze:   { badge:'assets/bronze.png',   title:'You called it.',        body:'Right on the money:',  amount:'2,647.60',       odds:'5.67×',   colors:['#6B3F1F','#B8703D','#D89060','#F4A57E','#FFD49A'] },
+  silver:   { badge:'assets/silver.png',   title:"You're untouchable.",   body:'Untouchable reward:',  amount:'112,132.30',     odds:'123.03×', colors:['#8A95A2','#A8B2BD','#C8D0D8','#E5E9ED','#ffffff'] },
+  gold:     { badge:'assets/gold.png',     title:'On top of your game.',  body:'Crowning your run:',   amount:'52,347.60',      odds:'56.90×',  colors:['#B8841A','#E5A823','#F4C842','#FFD966','#FFF0A0'] },
+  platinum: { badge:'assets/platinum.png', title:'That was pure class.',  body:'Classy payout:',       amount:'24,427.20',      odds:'26.89×',  colors:['#7B8A99','#A0AEC0','#CBD5E0','#FFB6D9','#A8E5F5'] },
+  diamond:  { badge:'assets/diamond.png',  title:'Legendary play.',       body:'Legendary haul:',      amount:'100,005,000.60', odds:'1023.87×',colors:['#1E3A8A','#2563EB','#4A90E2','#7BB3F0','#A8DCFF'] },
 };
 
-const titleEl = document.getElementById('title');
-const bodyEl = document.getElementById('body');
-const amountEl = document.getElementById('amount');
-const oddsEl = document.getElementById('odds');
-const badgeEl = document.getElementById('badge');
-const modalEl = document.getElementById('modal');
-const backdrop = document.getElementById('backdrop');
-const closeBtn = document.getElementById('closeBtn');
-const tierSwitch = document.getElementById('tierSwitch');
+const titleEl=document.getElementById('title'), bodyEl=document.getElementById('body'),
+  amountEl=document.getElementById('amount'), oddsEl=document.getElementById('odds'),
+  badgeEl=document.getElementById('badge'), modalEl=document.getElementById('modal'),
+  backdrop=document.getElementById('backdrop'), closeBtn=document.getElementById('closeBtn'),
+  tierSwitch=document.getElementById('tierSwitch');
 
+const confettiCtor = (opts) => confetti(opts);
 let currentTier = (new URLSearchParams(location.search).get('tier')) || 'bronze';
 if (!tiers[currentTier]) currentTier = 'bronze';
 
-function setActiveTierButton(tier) {
-  for (const btn of tierSwitch.querySelectorAll('button')) {
-    btn.classList.toggle('active', btn.dataset.tier === tier);
-  }
+function setActiveTierButton(tier){ for (const b of tierSwitch.querySelectorAll('button')) b.classList.toggle('active', b.dataset.tier===tier); }
+function fitAmount(el){ el.style.fontSize='40px'; let s=40; const w=el.parentElement.clientWidth-4; while(s>18 && el.scrollWidth>w){ s--; el.style.fontSize=s+'px'; } }
+function loadTier(tier){
+  currentTier=tier; setActiveTierButton(tier); const t=tiers[tier];
+  titleEl.textContent=t.title; bodyEl.textContent=t.body; amountEl.textContent=t.amount; oddsEl.textContent=t.odds;
+  badgeEl.src=t.badge; badgeEl.onload=()=>fitAmount(amountEl); fitAmount(amountEl);
 }
-
-function fitAmount(el) {
-  el.style.fontSize = '40px';
-  let size = 40;
-  const parentW = el.parentElement.clientWidth - 4;
-  while (size > 18 && el.scrollWidth > parentW) {
-    size -= 1;
-    el.style.fontSize = size + 'px';
-  }
-}
-
-function loadTier(tier) {
-  currentTier = tier;
-  setActiveTierButton(tier);
-  const t = tiers[tier];
-  titleEl.textContent = t.title;
-  bodyEl.textContent = t.body;
-  amountEl.textContent = t.amount;
-  oddsEl.textContent = t.odds;
-  badgeEl.src = t.badge;
-  badgeEl.onload = () => fitAmount(amountEl);
-  fitAmount(amountEl);
-}
-
-function showWin() {
+function showWin(){
   backdrop.classList.add('show');
-  setTimeout(() => modalEl.classList.add('show'), 120);
-  setTimeout(burstConfetti, 380);
+  setTimeout(()=>modalEl.classList.add('show'), 120);
+  setTimeout(burstConfetti, 420);
 }
-function hideWin() {
+function clearConfetti(fadeMs){
+  // canvas-confetti renders into its own <canvas> appended to <body> (not our #confetti)
+  const c = document.querySelector('canvas:not(#confetti)');
+  if (c){ c.style.transition = 'opacity ' + fadeMs + 'ms ease'; c.style.opacity = '0'; }
+  setTimeout(()=>{ if (typeof confetti.reset === 'function') confetti.reset(); }, fadeMs);
+}
+function hideWin(){
   backdrop.classList.remove('show');
   modalEl.classList.remove('show');
+  clearConfetti(150); // fade out any falling confetti fast on close
 }
-
-function burstConfetti() {
-  const rect = badgeEl.getBoundingClientRect();
-  const x = (rect.left + rect.width / 2) / window.innerWidth;
-  const y = (rect.top + rect.height / 2) / window.innerHeight;
-  const t = tiers[currentTier];
-  confetti({
-    particleCount: 160,
-    spread: 110,
-    origin: { x, y },
-    colors: t.colors,
-    scalar: 1.8,
-    startVelocity: 55,
-    gravity: 0.9,
-    ticks: 280,
-    zIndex: 200
-  });
+const phoneEl = document.getElementById('phone');
+function burstConfetti(){
+  // Compute the badge's FINAL resting position via offset chain (ignores the modal's
+  // slide-in transform), so the origin is correct even when fired before the animation ends.
+  let el = badgeEl, left = 0, top = 0;
+  while (el && el !== phoneEl) { left += el.offsetLeft; top += el.offsetTop; el = el.offsetParent; }
+  const pr = phoneEl.getBoundingClientRect();
+  const x = (pr.left + left + badgeEl.offsetWidth/2) / window.innerWidth;
+  const y = (pr.top + top) / window.innerHeight; // top of badge
+  confettiCtor({ particleCount:220, spread:360, origin:{x,y}, colors:tiers[currentTier].colors, scalar:2, startVelocity:22, gravity:0.9, ticks:160, decay:0.92 });
 }
-
 closeBtn.addEventListener('click', hideWin);
 backdrop.addEventListener('click', hideWin);
-for (const btn of tierSwitch.querySelectorAll('button')) {
-  btn.addEventListener('click', () => {
-    hideWin();
-    loadTier(btn.dataset.tier);
-    setTimeout(showWin, 250);
-  });
+for (const b of tierSwitch.querySelectorAll('button')) b.addEventListener('click', ()=>{ hideWin(); loadTier(b.dataset.tier); setTimeout(showWin,250); });
+document.addEventListener('keydown', e=>{ if(e.key.toLowerCase()==='r'){ hideWin(); setTimeout(showWin,250); } if(e.key==='Escape') hideWin(); });
+/* ─────────────── Account bottom sheet ─────────────── */
+const acctBtn=document.getElementById('accountBtn'), acctSheet=document.getElementById('acctSheet'),
+  acctBackdrop=document.getElementById('acctBackdrop'), acctClose=document.getElementById('acctClose'),
+  acctPages=document.getElementById('acctPages');
+function openAccount(){ acctBackdrop.classList.add('show'); requestAnimationFrame(()=>acctSheet.classList.add('show')); }
+function closeAccount(){
+  acctBackdrop.classList.remove('show'); acctSheet.classList.remove('show');
+  setTimeout(()=>acctPages.classList.remove('show-badges'), 420); // reset to main page once hidden
 }
-document.addEventListener('keydown', (e) => {
-  if (e.key.toLowerCase() === 'r') { hideWin(); setTimeout(showWin, 250); }
-  if (e.key === 'Escape') hideWin();
+acctBtn.addEventListener('click', openAccount);
+acctClose.addEventListener('click', closeAccount);
+acctBackdrop.addEventListener('click', closeAccount);
+// Dark Theme toggle: ON = dark (default), OFF = light
+const darkToggle = document.getElementById('darkToggle');
+function applyTheme(){ phoneEl.classList.toggle('light', !darkToggle.classList.contains('on')); }
+darkToggle.addEventListener('click', ()=>{ darkToggle.classList.toggle('on'); applyTheme(); });
+applyTheme();
+
+// My Badges → push sub-page inside the sheet (back button returns)
+const badgesNav = document.getElementById('badgesNav'), badgesBack = document.getElementById('badgesBack');
+badgesNav.addEventListener('click', ()=> acctPages.classList.add('show-badges'));
+badgesBack.addEventListener('click', ()=> acctPages.classList.remove('show-badges'));
+document.getElementById('badgesClose').addEventListener('click', closeAccount);
+
+// Win badges = a chronological log of wins (newest first). Same tier can repeat.
+const TIER_META = {
+  bronze:   { name:'Bronze',   img:'assets/bronze.png' },
+  silver:   { name:'Silver',   img:'assets/silver.png' },
+  gold:     { name:'Gold',     img:'assets/gold.png' },
+  platinum: { name:'Platinum', img:'assets/platinum.png' },
+  diamond:  { name:'Diamond',  img:'assets/diamond.png' },
+};
+const WINS = [
+  { tier:'gold',     amount:'52,347.60',      odds:'56.90×',   date:'2 Jun 2026' },
+  { tier:'bronze',   amount:'2,647.60',       odds:'5.67×',    date:'28 May 2026' },
+  { tier:'diamond',  amount:'100,005,000.60', odds:'1023.87×', date:'21 May 2026' },
+  { tier:'bronze',   amount:'1,205.40',       odds:'3.12×',    date:'14 May 2026' },
+  { tier:'silver',   amount:'18,420.00',      odds:'24.10×',   date:'6 May 2026' },
+  { tier:'bronze',   amount:'3,980.00',       odds:'7.45×',    date:'27 Apr 2026' },
+  { tier:'platinum', amount:'24,427.20',      odds:'26.89×',   date:'19 Apr 2026' },
+  { tier:'silver',   amount:'9,310.50',       odds:'12.30×',   date:'8 Apr 2026' },
+];
+function renderWins(){
+  document.getElementById('winGrid').innerHTML = WINS.map((w,i)=>{
+    const m = TIER_META[w.tier];
+    return `<div class="win-badge" data-win="${i}">
+      <img src="${m.img}" alt="${m.name}">
+      <div class="wb-tier">${m.name}</div>
+      <div class="wb-amount"><span class="wb-cur">UGX </span>${w.amount}</div>
+      <div class="wb-odds">${w.odds} odds</div>
+      <div class="wb-date">${w.date}</div>
+    </div>`;
+  }).join('');
+}
+renderWins();
+// Tap a win to re-open that exact win (its tier, amount and odds)
+function showWinFor(w){
+  currentTier = w.tier; setActiveTierButton(w.tier);
+  const t = tiers[w.tier];
+  titleEl.textContent = t.title; bodyEl.textContent = t.body;
+  amountEl.textContent = w.amount; oddsEl.textContent = w.odds;
+  badgeEl.src = t.badge; badgeEl.onload = ()=>fitAmount(amountEl); fitAmount(amountEl);
+  showWin();
+}
+document.getElementById('winGrid').addEventListener('click', e=>{
+  const cell = e.target.closest('[data-win]'); if (!cell) return;
+  // Show the win modal ON TOP of the badges page — keep the sheet open so
+  // dismissing the modal returns the user straight back to their badge list.
+  showWinFor(WINS[+cell.dataset.win]);
 });
+acctSheet.querySelectorAll('.seg').forEach(seg => seg.addEventListener('click', e => {
+  if (!e.target.matches('span')) return;
+  seg.querySelectorAll('span').forEach(x=>x.classList.remove('on')); e.target.classList.add('on');
+}));
 
 loadTier(currentTier);
-window.addEventListener('load', () => setTimeout(showWin, 650));
+window.addEventListener('load', ()=> setTimeout(showWin, 900));
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAccount(); });
 </script>
 </body>
 </html>
